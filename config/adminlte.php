@@ -392,6 +392,12 @@ return [
             'icon_color' => 'cyan',
             'url' => '#',
         ],
+        [
+            'text' => 'Demand Notice',
+            'url' => 'demandnotice',
+            'icon' => 'fas fa-fw fa-lock',
+        ],
+
     ],
 
     /*

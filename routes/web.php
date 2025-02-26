@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DemandNoticeController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -18,3 +20,9 @@ Auth::routes();
 Route::get('/', function () {
     return view('example');
 });
+
+Route::get('/demandnotice', [DemandNoticeController::class, 'index']);
+Route::get('/demandnotice/show', [DemandNoticeController::class, 'show']);
+Route::post('/demandnotice/store', [DemandNoticeController::class, 'store']);
+Route::put('/demandnotice/update/{id}', [DemandNoticeController::class, 'update']);
+Route::delete('/demandnotice/destroy/{id}', [DemandNoticeController::class, 'destroy']);
