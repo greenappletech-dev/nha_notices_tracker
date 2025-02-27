@@ -301,6 +301,10 @@ return [
     'menu' => [
         // Navbar items:
         [
+            'text' => 'Deliveries',
+            'url' => '/deliveries',
+        ],
+        [
             'type' => 'navbar-search',
             'text' => 'search',
             'topnav_right' => true,

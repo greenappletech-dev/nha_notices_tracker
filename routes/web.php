@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DeliveryController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -14,7 +15,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Auth::routes();
-Route::get('/', function () {
-    return view('example');
-});
+Auth::routes(['verify' => true, 'register' => false]); //, 'register' => false
+
+Route::group(['middleware' => 'auth'], function () {
+    Route::get('/', function () {
+        return view('example');
+    });
+    Route::get('/home', function () {
+        return view('example');
+    });
+    Route::prefix('deliveries')->group(function () {
+        Route::get('/', [DeliveryController:: class, 'index']);
+        Route::get('gather_project/{id}',[DeliveryController::class, 'gather_project']);
+        Route::get('gather_beneficiaries/{id}',[DeliveryController::class, 'gather_beneficiaries']);
+        Route::post('store', [DeliveryController::class, 'store']);
+    });
+}); 
