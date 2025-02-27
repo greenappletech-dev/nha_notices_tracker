@@ -32,11 +32,12 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('gather_beneficiaries/{id}',[DeliveryController::class, 'gather_beneficiaries']);
         Route::post('store', [DeliveryController::class, 'store']);
     });
-    
-}); 
+    Route::prefix('demandnotices')->group(function () {
+        Route::get('/', [DemandNoticeController::class, 'index']);
+        Route::get('/show', [DemandNoticeController::class, 'show']);
+        Route::post('/store', [DemandNoticeController::class, 'store']);
+        Route::put('/update/{id}', [DemandNoticeController::class, 'update']);
+        Route::delete('/destroy/{id}', [DemandNoticeController::class, 'destroy']);
+    });
 
-Route::get('/demandnotice', [DemandNoticeController::class, 'index']);
-Route::get('/demandnotice/show', [DemandNoticeController::class, 'show']);
-Route::post('/demandnotice/store', [DemandNoticeController::class, 'store']);
-Route::put('/demandnotice/update/{id}', [DemandNoticeController::class, 'update']);
-Route::delete('/demandnotice/destroy/{id}', [DemandNoticeController::class, 'destroy']);
+}); 
