@@ -5,7 +5,10 @@
  */
 
 require('./bootstrap');
-
+import Vue from "vue";
+import VueSimpleAlert from "vue-simple-alert";
+import { ClientTable } from 'vue-tables-2';
+Vue.use(ClientTable, {}, false, 'bootstrap4');
 window.Vue = require('vue').default;
 
 /**

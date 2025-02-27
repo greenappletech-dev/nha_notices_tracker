@@ -1,9 +1,9 @@
 <?php
 
-use App\Http\Controllers\DeliveryController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DemandNoticeController;
+use App\Http\Controllers\DeliveryController;
+use App\Http\Controllers\DemandNoticeTrackerController;
 
 
 /*
@@ -32,12 +32,12 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('gather_beneficiaries/{id}',[DeliveryController::class, 'gather_beneficiaries']);
         Route::post('store', [DeliveryController::class, 'store']);
     });
-    Route::prefix('demandnotices')->group(function () {
-        Route::get('/', [DemandNoticeController::class, 'index']);
-        Route::get('/show', [DemandNoticeController::class, 'show']);
-        Route::post('/store', [DemandNoticeController::class, 'store']);
-        Route::put('/update/{id}', [DemandNoticeController::class, 'update']);
-        Route::delete('/destroy/{id}', [DemandNoticeController::class, 'destroy']);
+    Route::prefix('demandnotice')->group(function () {
+        Route::get('/', [DemandNoticeTrackerController::class, 'index']);
+        Route::get('/show', [DemandNoticeTrackerController::class, 'show']);
+        Route::post('/store', [DemandNoticeTrackerController::class, 'store']);
+        Route::put('/update/{id}', [DemandNoticeTrackerController::class, 'update']);
+        Route::delete('/destroy/{id}', [DemandNoticeTrackerController::class, 'destroy']);
     });
 
 }); 
