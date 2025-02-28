@@ -1,89 +1,208 @@
 <template>
-    <div>
+    <div class="container mt-4">
         <div class="d-flex justify-content-center">
-            <h1>Capture Delivery</h1>
+            <h2 class="mb-4">Capture Delivery</h2>
         </div>
-        <div class="card">
+
+        <!-- Success Notification -->
+        <div v-if="showSuccessMessage" class="alert alert-success text-center">
+            Delivery saved successfully!
+        </div>
+
+        <div class="card shadow-sm">
             <div class="card-body">
-                <div class="form-group">
-                    <label for="">Select Type of Notice</label>
-                    <select name="" id="" class="form-control" v-model="dataValues.notice_id">
-                        <option value="1">Billing Notice</option>
-                        <option value="2">Demand Notice</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="">Select District</label>
-                    <select name="" id="" class="form-control" @change="selectDistrict" v-model="dataValues.district_id">
-                        <option v-for="district in districts" :value="district.id">{{ district.name }}</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="">Select Project</label>
-                    <Select2 v-model="dataValues.project_id" :options="projectList" @change="myChangeProject" class="form-contol"/>
-                </div>
-                <div class="form-group">
-                    <label for="">Search Benefiary</label>
-                    <Select2 v-model="dataValues.beneficiary_id" :options="beneficiaries" class="form-contol" />
+                <div class="row">
+                    
+                    <!-- Left Side: Form Inputs -->
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Select Type of Notice</label>
+                            <select class="form-control" v-model="dataValues.notice_id">
+                                <option value="1">Billing Notice</option>
+                                <option value="2">Demand Notice</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Select District</label>
+                            <select class="form-control" @change="selectDistrict" v-model="dataValues.district_id">
+                                <option v-for="district in districts" :value="district.id">{{ district.name }}</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Select Project</label>
+                            <Select2 class="form-control" v-model="dataValues.project_id" :options="projectList" @change="myChangeProject" />
+                        </div>
+                        <div class="form-group">
+                            <label>Search Beneficiary</label>
+                            <Select2 class="form-control" v-model="dataValues.beneficiary_id" :options="beneficiaries" />
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 text-center">
+                        <h5>Capture Delivery Photo</h5>
+
+                        <video v-if="!dataValues.capturedPhotoURL" ref="camera" autoplay class="camera-preview"></video>
+
+                        <img v-if="dataValues.capturedPhotoURL" :src="dataValues.capturedPhotoURL" class="captured-photo" />
+
+                        <canvas ref="canvas" class="d-none"></canvas>
+
+                        <div class="mt-3">
+                            <button v-if="!dataValues.capturedPhotoURL" class="btn btn-success btn-sm mx-1" @click="startCamera">Start Camera</button>
+                            <button v-if="!dataValues.capturedPhotoURL" class="btn btn-primary btn-sm mx-1" @click="capturePhoto">Capture Photo</button>
+
+                            <button v-if="dataValues.capturedPhotoURL" class="btn btn-warning btn-sm mx-1" @click="retakePhoto">Retake Photo</button>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="card-footer d-flex justify-content-end">
+
+            <div class="card-footer text-right">
                 <button class="btn btn-primary" @click="storeData">Save</button>
             </div>
         </div>
     </div>
 </template>
+
 <script>
-    import Select2 from 'v-select2-component';
-    export default{
-        props:['districts'],
-        data() {
-            return {
-                myValue:'',
-                myOptions: ['op1', 'op2', 'op3'], // or [{id: key, text: value}, {id: key, text: value}]
-                dataValues:{
-                    notice_id: '',
-                    district_id: '',
-                    project_id: '',
-                    beneficiary_id:'',
-                },
-                projectList:[],
-                beneficiaries:[],
-            }
-        },
-        components: {Select2},
-        methods: {
-            selectDistrict(){
-                axios.get('deliveries/gather_project/'+ this.dataValues.district_id)
+import Select2 from 'v-select2-component';
+
+export default {
+    props: ['districts'],
+    data() {
+        return {
+            showSuccessMessage: false,
+            myValue:'',
+            myOptions: ['op1', 'op2', 'op3'], // or [{id: key, text: value}, {id: key, text: value}]
+            dataValues: {
+                notice_id: '',
+                district_id: '',
+                project_id: '',
+                beneficiary_id: '',
+                photo: null,
+                capturedPhotoURL: null,
+            },
+            projectList: [],
+            beneficiaries: [],
+            cameraStream: null // Track the camera stream
+        };
+    },
+    components: { Select2 },
+    methods: {
+        selectDistrict() {
+            axios.get(`deliveries/gather_project/${this.dataValues.district_id}`)
                 .then(response => {
                     this.projectList = response.data.data;
-                 })
-            },
-            myChangeProject(){
-                axios.get('deliveries/gather_beneficiaries/' + this.dataValues.project_id)
+                });
+        },
+        myChangeProject() {
+            axios.get(`deliveries/gather_beneficiaries/${this.dataValues.project_id}`)
                 .then(response => {
-                    console.log(response.data.data);
                     this.beneficiaries = response.data.data;
-                 })
-            },
-            storeData(){
-                axios.post('deliveries/store', this.dataValues)
-                .then(response => {
-                    console.log(response);
-                 })
-                .catch(error => {
-                    console.log(error);
-                 });
+                });
+        },
+        async startCamera() {
+            try {
+                const videoElement = this.$refs.camera;
+                this.cameraStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                videoElement.srcObject = this.cameraStream;
+            } catch (error) {
+                console.error("Error accessing the camera:", error);
+                alert("Unable to access the camera. Please check your browser permissions.");
             }
-            // mySelectProject({id, text}){
-            //     console.log({id, text})
-            // },
-            // myChangeEvent(val){
-            //     console.log(val);
-            // },
-            // mySelectEvent({id, text}){
-            //     console.log({id, text})
-            // }
+        },
+        async capturePhoto() {
+            const canvas = this.$refs.canvas;
+            const context = canvas.getContext('2d');
+            const video = this.$refs.camera;
+
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            this.dataValues.capturedPhotoURL = canvas.toDataURL('image/png');
+
+            const blob = await fetch(this.dataValues.capturedPhotoURL).then(res => res.blob());
+            this.dataValues.photo = new File([blob], "delivery_photo.png", { type: "image/png" });
+
+            this.stopCamera();
+        },
+        retakePhoto() {
+            this.dataValues.capturedPhotoURL = null;
+            this.dataValues.photo = null;
+
+            this.startCamera();
+        },
+        stopCamera() {
+            if (this.cameraStream) {
+                this.cameraStream.getTracks().forEach(track => track.stop());
+                this.cameraStream = null;
+            }
+        },
+        storeData() {
+            const formData = new FormData();
+            formData.append('notice_id', this.dataValues.notice_id);
+            formData.append('district_id', this.dataValues.district_id);
+            formData.append('project_id', this.dataValues.project_id);
+            formData.append('beneficiary_id', this.dataValues.beneficiary_id);
+
+            if (this.dataValues.photo) {
+                formData.append('photo', this.dataValues.photo, 'delivery_photo.png');
+            }
+
+            axios.post('/deliveries/store', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            })
+            .then(response => {
+                console.log(response);
+                this.showSuccessMessage = true;
+
+                setTimeout(() => {
+                    this.showSuccessMessage = false;
+                }, 3000);
+
+                this.resetForm();
+            })
+            .catch(error => {
+                console.log(error);
+                alert('Error saving delivery.');
+            });
+        },
+        resetForm() {
+            this.dataValues = {
+                notice_id: '',
+                district_id: '',
+                project_id: '',
+                beneficiary_id: '',
+                photo: null,
+                capturedPhotoURL: null,
+            };
+
+            this.startCamera();
         }
     }
+};
 </script>
+
+<style scoped>
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.camera-preview, .captured-photo {
+    width: 320px;
+    height: 240px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.alert {
+    padding: 10px;
+    font-size: 1rem;
+    margin-bottom: 15px;
+}
+.btn-sm {
+    font-size: 0.85rem;
+    padding: 6px 12px;
+}
+</style>
