@@ -3,31 +3,28 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\DemandNotice; // Ensure this model exists
+use App\Models\DemandNotice;
 
 class DemandNoticeController extends Controller
 {
-    // Show the demand notice page
     public function index()
     {
         return view('masterdata.demandnotice');
     }
 
-    // Fetch all demand notices for Vue table
     public function show()
     {
-        $demandNotices = DemandNotice::all();
-        return response()->json(['data' => $demandNotices]);
+        $data = demand_notice::all();
+        return response()->json(['data' => $data], 200);
     }
 
-    // Store a new record
     public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
         ]);
 
-        $demandNotice = DemandNotice::create([
+        $demand_notices = demand_notice::create([
             'name' => $request->name,
         ]);
 
@@ -37,32 +34,33 @@ class DemandNoticeController extends Controller
         ], 201);
     }
 
-    // Update an existing record
-    public function update(Request $request, $id)
+    public function edit($id)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
-
-        $demandNotice = DemandNotice::findOrFail($id);
-        $demandNotice->update([
-            'name' => $request->name,
-        ]);
-
-        return response()->json([
-            'message' => 'Demand Notice successfully updated!',
-            'data' => $demandNotice,
-        ]);
+        $demand_notices = demand_notice::find($id);
+        return response()->json(['demand_notice' => $demand_notices], 200);
     }
 
-    // Delete a record
+    public function update(Request $request, $id)
+    {
+        // dd($request);
+        $request->validate([
+            'name' => 'required|unique:regions,name,' . $id,
+        ], [], [
+            'name' => 'Demand Notice Name',
+        ]);
+
+        $data = demand_notice::where('id', $id)->first();
+        $data->name = $request->name;
+        $data->save();
+
+        return response()->json(['message' => 'Demand Notice updated successfully!']);
+    }
+
     public function destroy($id)
     {
-        $demandNotice = DemandNotice::findOrFail($id);
-        $demandNotice->delete();
+        $data = demand_notice::where('id', $id)->first();
+        $data->delete();
 
-        return response()->json([
-            'message' => 'Demand Notice successfully deleted!',
-        ]);
+        return response()->json(['message' => 'Demand Notice deleted successfully!']);
     }
 }

@@ -1,215 +1,138 @@
 <template>
-    <div class="p-2">
-        <div class="m-4 mt-4">
-            <div class="content-breadcrumb">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item">
-                            <a href="#" class="text-dark">Master Data</a>
-                        </li>
-                        <li class="breadcrumb-item active text-success" aria-current="page">Demand Notice</li>
-                    </ol>
-                </nav>
-            </div>
-
-            <div class="mb-1">
-                <div class="d-flex justify-content-end">
-                    <button class="btn btn-primary" v-on:click="create">
-                        <i class="fas fa-plus"></i> Create New
-                    </button>
+    <div>
+        <div class="d-flex justify-content-center">
+            <h1>Capture Delivery</h1>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="">Select Type of Notice</label>
+                    <select name="" id="" class="form-control" v-model="dataValues.notice_id">
+                        <option value="1">Billing Notice</option>
+                        <option value="2">Demand Notice</option>
+                    </select>
                 </div>
-            </div>
-
-            <div class="card mb-4">
-                <div class="card-header"><b>Demand Notices List</b></div>
-                <div class="card-body">
-                    <v-client-table :data="data" :columns="columns" :options="options">
-                        <template slot="actions" slot-scope="row">
-                            <button class="btn btn-outline-warning" v-on:click="edit(row)">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="btn btn-outline-danger" v-on:click="destroy(row)">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </template>
-                    </v-client-table>
+                <div class="form-group">
+                    <label for="">Select District</label>
+                    <select name="" id="" class="form-control" @change="selectDistrict" v-model="dataValues.district_id">
+                        <option v-for="district in districts" :value="district.id">{{ district.name }}</option>
+                    </select>
                 </div>
-            </div>
-
-            <div class="modal fade" id="create-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <h5 class="modal-title bg-primary text-center pt-2 pb-2" style="font-weight:bold;">
-                            {{ isEdit ? 'Update Demand Notice' : 'Create Demand Notice'}}
-                        </h5>
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label for="name">Demand Notice</label>
-                                <input type="text" class="form-control" id="name" v-model="name"
-                                    :class="{ 'border border-danger' : errors.name }"
-                                />
-                                <p class="text-danger" v-if="errors.name">{{ errors.name[0] }}</p>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button @click="closeModal" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button v-if="!isEdit" v-on:click="createRecord" type="button" class="btn btn-primary">Save changes</button>
-                            <button v-else v-on:click="updateRecord" type="button" class="btn btn-primary">Save changes</button>
-                        </div>
+                <div class="form-group">
+                    <label for="">Select Project</label>
+                    <Select2 v-model="dataValues.project_id" :options="projectList" @change="myChangeProject" class="form-contol"/>
+                </div>
+                <div class="form-group">
+                    <label for="">Search Beneficiary</label>
+                    <Select2 v-model="dataValues.beneficiary_id" :options="beneficiaries" class="form-contol" />
+                </div>
+                
+                <!-- Camera Section -->
+                <div class="camera-section text-center mt-4">
+                    <video ref="camera" autoplay class="border rounded"></video>
+                    <br>
+                    <button class="btn btn-primary mt-2" @click="capturePhoto">Capture Photo</button>
+                    <canvas ref="canvas" class="d-none"></canvas>
+                    <div v-if="capturedPhotoURL" class="mt-3">
+                        <h5>Captured Image:</h5>
+                        <img :src="capturedPhotoURL" class="img-fluid rounded border" />
                     </div>
                 </div>
+            </div>
+            <div class="card-footer d-flex justify-content-end">
+                <button class="btn btn-primary" @click="storeData">Save</button>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import Select2 from 'v-select2-component';
 export default {
+    props: ['districts'],
     data() {
         return {
-            isEdit: false,
-            errors: [],
-            id: '',
-            name: '',
-            data: [],
-            columns: ['id', 'name', 'actions'],
-            options: {
-                headings: {
-                    id: 'ID',
-                    name: 'Demand Notice',
-                    actions: 'Actions'
-                },
-                filterable: false,
+            dataValues: {
+                notice_id: '',
+                district_id: '',
+                project_id: '',
+                beneficiary_id: '',
             },
+            projectList: [],
+            beneficiaries: [],
+            capturedPhotoURL: '',
+            photo: null
         };
     },
+    components: { Select2 },
+    mounted() {
+        this.startCamera();
+    },
     methods: {
-        init() {
-            this.name = '';
-            this.errors = [];
-        },
-        show() {
-            axios.get('/demandnotice/show').then(response => {
-                this.data = response.data.data;
-            });
-        },
-        closeModal() {
-            $("#create-modal").modal("hide");
-        },
-        create() {
-            this.isEdit = false;
-            this.init();
-            $("#create-modal").modal("show");
-        },
-        createRecord() {
-            axios.post('/demandnotice/store', { name: this.name })
+        selectDistrict() {
+            axios.get('deliveries/gather_project/' + this.dataValues.district_id)
                 .then(response => {
-                    this.$fire({
-                        title: 'Successfully Saved!',
-                        text: response.data.message,
-                        type: 'success',
-                        timer: 3000,
-                    });
-                    this.show();
-                    this.init();
-                    this.closeModal();
-                })
-                .catch(error => {
-                    this.$fire({
-                        title: 'Error Saving',
-                        text: error.response.data.message,
-                        type: 'warning',
-                        timer: 3000,
-                    });
-                    this.errors = error.response.data.errors;
+                    this.projectList = response.data.data;
                 });
         },
-        edit(data) {
-            this.isEdit = true;
-            this.id = data.row.id;
-            this.name = data.row.name;
-            $("#create-modal").modal("show");
-        },
-        updateRecord() {
-            axios.put('/demandnotice/update/' + this.id, { name: this.name })
+        myChangeProject() {
+            axios.get('deliveries/gather_beneficiaries/' + this.dataValues.project_id)
                 .then(response => {
-                    this.$fire({
-                        title: 'Successfully Updated!',
-                        text: response.data.message,
-                        type: 'success',
-                        timer: 3000,
-                    });
-                    this.show();
-                    this.init();
-                    $('#create-modal').modal('hide');
-                })
-                .catch(error => {
-                    this.$fire({
-                        title: 'Error Saving',
-                        text: error.response.data.message,
-                        type: 'warning',
-                        timer: 3000,
-                    });
-                    this.errors = error.response.data.errors;
+                    this.beneficiaries = response.data.data;
                 });
         },
-        destroy(data) {
-            if (confirm('Are you sure you want to delete this record?')) {
-                axios.delete('/demandnotice/destroy/' + data.row.id)
-                    .then(response => {
-                        this.$fire({
-                            title: 'Successfully Deleted!',
-                            text: response.data.message,
-                            type: 'success',
-                            timer: 3000,
-                        });
-                        this.show();
-                    })
-                    .catch(error => {
-                        this.$fire({
-                            title: 'Error',
-                            text: error.response ? error.response.data.message : 'Internal Server Error',
-                            type: 'warning',
-                            timer: 3000,
-                        });
-                        this.errors = error.response?.data.errors || [];
-                    });
+        async capturePhoto() {
+            const canvas = this.$refs.canvas;
+            const context = canvas.getContext('2d');
+            const video = this.$refs.camera;
+
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            this.capturedPhotoURL = canvas.toDataURL('image/png');
+            const blob = await fetch(this.capturedPhotoURL).then(res => res.blob());
+            this.photo = blob;
+        },
+        async startCamera() {
+            try {
+                const videoElement = this.$refs.camera;
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                videoElement.srcObject = stream;
+            } catch (error) {
+                console.error("Error accessing the camera:", error);
+                alert("Unable to access the camera. Please check your browser permissions.");
             }
         },
-    },
-    mounted() {
-        this.show();
-        this.init();
+        storeData() {
+            let formData = new FormData();
+            formData.append('notice_id', this.dataValues.notice_id);
+            formData.append('district_id', this.dataValues.district_id);
+            formData.append('project_id', this.dataValues.project_id);
+            formData.append('beneficiary_id', this.dataValues.beneficiary_id);
+            if (this.photo) {
+                formData.append('photo', this.photo, 'captured_photo.png');
+            }
+            
+            axios.post('deliveries/store', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            }).then(response => {
+                console.log(response);
+            }).catch(error => {
+                console.log(error);
+            });
+        }
     }
 };
 </script>
 
 <style scoped>
-.p-5 {
-    padding: 3rem !important;
+.camera-section video {
+    width: 100%;
+    max-width: 400px;
 }
-
-.card {
-    margin-top: 1rem;
-}
-
-.form-group {
-    margin-bottom: 1rem;
-}
-
-.form-check {
-    margin-top: 0.5rem;
-}
-
-.breadcrumb {
-    background-color: white;
-    font-size: 18px;
-    font-weight: bold;
-}
-
-.breadcrumb-item + .breadcrumb-item::before {
-    content: '>';
-    color: #6c757d;
-    padding: 0 0.5rem;
+.camera-section img {
+    width: 100%;
+    max-width: 400px;
 }
 </style>

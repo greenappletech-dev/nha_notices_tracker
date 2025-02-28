@@ -46,6 +46,7 @@
                     district_id: '',
                     project_id: '',
                     beneficiary_id:'',
+                    photo: null,
                 },
                 projectList:[],
                 beneficiaries:[],
