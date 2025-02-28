@@ -12,7 +12,6 @@
         <div class="card shadow-sm">
             <div class="card-body">
                 <div class="row">
-                    
                     <!-- Left Side: Form Inputs -->
                     <div class="col-md-6">
                         <div class="form-group">
@@ -30,11 +29,11 @@
                         </div>
                         <div class="form-group">
                             <label>Select Project</label>
-                            <Select2 class="form-control" v-model="dataValues.project_id" :options="projectList" @change="myChangeProject" />
+                            <Select2 class="form-control select2" v-model="dataValues.project_id" :options="projectList" @change="myChangeProject" />
                         </div>
                         <div class="form-group">
                             <label>Search Beneficiary</label>
-                            <Select2 class="form-control" v-model="dataValues.beneficiary_id" :options="beneficiaries" />
+                            <Select2 class="form-control select2" v-model="dataValues.beneficiary_id" :options="beneficiaries" />
                         </div>
                     </div>
 
@@ -184,13 +183,19 @@ export default {
 </script>
 
 <style scoped>
+.select2{
+    width: 100%;
+    padding-bottom:20px;
+    margin-bottom: 10px;
+    align-items: center;
+}
 .form-group {
     margin-bottom: 1rem;
 }
 
 .camera-preview, .captured-photo {
-    width: 320px;
-    height: 240px;
+    width: 100%;
+    height: 340px;
     border: 2px solid #ddd;
     border-radius: 8px;
     object-fit: cover;
