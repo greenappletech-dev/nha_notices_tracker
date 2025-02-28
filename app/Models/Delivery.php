@@ -15,7 +15,8 @@ class Delivery extends Model
         'project_id',
         'beneficiary_id',
         'photo',
-        'date_captured'
+        'date_captured',
+        'user_id',
     ];
 }
 

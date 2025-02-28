@@ -54,6 +54,7 @@ class DeliveryController extends Controller
             'beneficiary_id' => $request->beneficiary_id,
             'photo' => $photoPath,
             'date_captured' => now(),
+            'user_id' => auth()->user()->id
         ]);
 
         return response()->json([
