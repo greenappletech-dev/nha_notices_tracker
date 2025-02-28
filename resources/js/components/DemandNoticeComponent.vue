@@ -1,17 +1,6 @@
 <template>
     <div class="p-2">
         <div class="m-4 mt-4">
-            <div class="content-breadcrumb">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item">
-                            <a href="#" class="text-dark">Master Data</a>
-                        </li>
-                        <li class="breadcrumb-item active text-success" aria-current="page">Demand Notice</li>
-                    </ol>
-                </nav>
-            </div>
-
             <div class="mb-1">
                 <div class="d-flex justify-content-end">
                     <button class="btn btn-primary" v-on:click="create">
