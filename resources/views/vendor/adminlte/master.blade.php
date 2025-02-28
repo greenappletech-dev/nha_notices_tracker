@@ -131,6 +131,28 @@
     {{-- Custom Scripts --}}
     @yield('adminlte_js')
 
+    <style>
+    .content-wrapper {
+        background-color: #F8F8F8 !important;
+        position: relative;
+        min-height: 100vh;
+    }
+
+    .content-wrapper::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url("{{ asset('/images/nha.png') }}") center center no-repeat;
+        background-size: 600px 80vh;
+        opacity: 0.1;
+        z-index: 0;
+    }
+</style>
+
+
 </body>
 
 </html>
