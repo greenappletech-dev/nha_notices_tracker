@@ -10149,7 +10149,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.select2[data-v-008b81f0]{\r\n    width: 100%;\r\n    padding-bottom:20px;\r\n    margin-bottom: 10px;\r\n    align-items: center;\n}\n.form-group[data-v-008b81f0] {\r\n    margin-bottom: 1rem;\n}\n.camera-preview[data-v-008b81f0], .captured-photo[data-v-008b81f0] {\r\n    width: 100%;\r\n    height: 340px;\r\n    border: 2px solid #ddd;\r\n    border-radius: 8px;\r\n    -o-object-fit: cover;\r\n       object-fit: cover;\n}\n.alert[data-v-008b81f0] {\r\n    padding: 10px;\r\n    font-size: 1rem;\r\n    margin-bottom: 15px;\n}\n.btn-sm[data-v-008b81f0] {\r\n    font-size: 0.85rem;\r\n    padding: 6px 12px;\n}\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.select2[data-v-008b81f0]{\r\n    width: 100%;\r\n    margin-bottom: 10px;\r\n    align-items: center;\r\n    display: block;\r\n    width: 100%;\r\n    height: calc(2.25rem + 2px);\r\n    font-size: 1rem;\r\n    font-weight: 400;\r\n    line-height: 1.5;\r\n    color: #495057;\r\n    background-color: #fff;\r\n    background-clip: padding-box;\r\n    border: 1px solid #ced4da;\r\n    border-radius: .25rem;\r\n    box-shadow: inset 0 0 0 transparent;\r\n    transition: border-color .15sease-in-out, box-shadow .15sease-in-out;\n}\n.form-group[data-v-008b81f0] {\r\n    margin-bottom: 1rem;\n}\n.camera-preview[data-v-008b81f0], .captured-photo[data-v-008b81f0] {\r\n    width: 100%;\r\n    height: 340px;\r\n    border: 2px solid #ddd;\r\n    border-radius: 8px;\r\n    -o-object-fit: cover;\r\n       object-fit: cover;\n}\n.alert[data-v-008b81f0] {\r\n    padding: 10px;\r\n    font-size: 1rem;\r\n    margin-bottom: 15px;\n}\n.btn-sm[data-v-008b81f0] {\r\n    font-size: 0.85rem;\r\n    padding: 6px 12px;\n}\r\n\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -50598,7 +50598,7 @@ var render = function () {
                 _c("label", [_vm._v("Select Project")]),
                 _vm._v(" "),
                 _c("Select2", {
-                  staticClass: "form-control select2",
+                  staticClass: "select2 custom-select-style",
                   attrs: { options: _vm.projectList },
                   on: { change: _vm.myChangeProject },
                   model: {
@@ -50620,7 +50620,7 @@ var render = function () {
                 _c("label", [_vm._v("Search Beneficiary")]),
                 _vm._v(" "),
                 _c("Select2", {
-                  staticClass: "form-control select2",
+                  staticClass: "select2",
                   attrs: { options: _vm.beneficiaries },
                   model: {
                     value: _vm.dataValues.beneficiary_id,
