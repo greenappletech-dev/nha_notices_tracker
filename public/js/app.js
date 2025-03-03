@@ -5244,6 +5244,10 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
 //
 //
 //
+//
+//
+//
+//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -5259,6 +5263,7 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
         district_id: '',
         project_id: '',
         beneficiary_id: '',
+        address: '',
         photo: null,
         capturedPhotoURL: null
       },
@@ -5283,8 +5288,23 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
         _this2.beneficiaries = response.data.data;
       });
     },
-    startCamera: function startCamera() {
+    updateAddress: function updateAddress() {
       var _this3 = this;
+      // console.log(this.dataValues.beneficiary_id);
+
+      var selectedBeneficiary = this.beneficiaries.find(function (b) {
+        return b.id == _this3.dataValues.beneficiary_id;
+      });
+      if (selectedBeneficiary) {
+        this.dataValues.address = selectedBeneficiary.address;
+        console.log("Address set to:", this.dataValues.address);
+      } else {
+        console.warn("Selected beneficiary not found!");
+        this.dataValues.address = '';
+      }
+    },
+    startCamera: function startCamera() {
+      var _this4 = this;
       return _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
         var constraints, videoElement;
         return _regeneratorRuntime().wrap(function _callee$(_context) {
@@ -5298,12 +5318,12 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
                   } // Use back camera
                 }
               };
-              videoElement = _this3.$refs.camera;
+              videoElement = _this4.$refs.camera;
               _context.next = 5;
               return navigator.mediaDevices.getUserMedia(constraints);
             case 5:
-              _this3.cameraStream = _context.sent;
-              videoElement.srcObject = _this3.cameraStream;
+              _this4.cameraStream = _context.sent;
+              videoElement.srcObject = _this4.cameraStream;
               _context.next = 13;
               break;
             case 9:
@@ -5319,29 +5339,29 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
       }))();
     },
     capturePhoto: function capturePhoto() {
-      var _this4 = this;
+      var _this5 = this;
       return _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
         var canvas, context, video, blob;
         return _regeneratorRuntime().wrap(function _callee2$(_context2) {
           while (1) switch (_context2.prev = _context2.next) {
             case 0:
-              canvas = _this4.$refs.canvas;
+              canvas = _this5.$refs.canvas;
               context = canvas.getContext('2d');
-              video = _this4.$refs.camera;
+              video = _this5.$refs.camera;
               canvas.width = video.videoWidth;
               canvas.height = video.videoHeight;
               context.drawImage(video, 0, 0, canvas.width, canvas.height);
-              _this4.dataValues.capturedPhotoURL = canvas.toDataURL('image/png');
+              _this5.dataValues.capturedPhotoURL = canvas.toDataURL('image/png');
               _context2.next = 9;
-              return fetch(_this4.dataValues.capturedPhotoURL).then(function (res) {
+              return fetch(_this5.dataValues.capturedPhotoURL).then(function (res) {
                 return res.blob();
               });
             case 9:
               blob = _context2.sent;
-              _this4.dataValues.photo = new File([blob], "delivery_photo.png", {
+              _this5.dataValues.photo = new File([blob], "delivery_photo.png", {
                 type: "image/png"
               });
-              _this4.stopCamera();
+              _this5.stopCamera();
             case 12:
             case "end":
               return _context2.stop();
@@ -5363,7 +5383,7 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
       }
     },
     storeData: function storeData() {
-      var _this5 = this;
+      var _this6 = this;
       var formData = new FormData();
       formData.append('notice_id', this.dataValues.notice_id);
       formData.append('district_id', this.dataValues.district_id);
@@ -5378,11 +5398,11 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
         }
       }).then(function (response) {
         console.log(response);
-        _this5.showSuccessMessage = true;
+        _this6.showSuccessMessage = true;
         setTimeout(function () {
-          _this5.showSuccessMessage = false;
+          _this6.showSuccessMessage = false;
         }, 3000);
-        _this5.resetForm();
+        _this6.resetForm();
       })["catch"](function (error) {
         console.log(error);
         alert('Error saving delivery.');
@@ -5394,6 +5414,7 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
         district_id: '',
         project_id: '',
         beneficiary_id: '',
+        address: '',
         photo: null,
         capturedPhotoURL: null
       };
@@ -10149,7 +10170,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.select2[data-v-008b81f0]{\r\n    width: 100%;\r\n    margin-bottom: 10px;\r\n    align-items: center;\r\n    display: block;\r\n    width: 100%;\r\n    height: calc(2.25rem + 2px);\r\n    font-size: 1rem;\r\n    font-weight: 400;\r\n    line-height: 1.5;\r\n    color: #495057;\r\n    background-color: #fff;\r\n    background-clip: padding-box;\r\n    border: 1px solid #ced4da;\r\n    border-radius: .25rem;\r\n    box-shadow: inset 0 0 0 transparent;\r\n    transition: border-color .15sease-in-out, box-shadow .15sease-in-out;\n}\n.form-group[data-v-008b81f0] {\r\n    margin-bottom: 1rem;\n}\n.camera-preview[data-v-008b81f0], .captured-photo[data-v-008b81f0] {\r\n    width: 100%;\r\n    height: 340px;\r\n    border: 2px solid #ddd;\r\n    border-radius: 8px;\r\n    -o-object-fit: cover;\r\n       object-fit: cover;\n}\n.alert[data-v-008b81f0] {\r\n    padding: 10px;\r\n    font-size: 1rem;\r\n    margin-bottom: 15px;\n}\n.btn-sm[data-v-008b81f0] {\r\n    font-size: 0.85rem;\r\n    padding: 6px 12px;\n}\r\n\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.select2[data-v-008b81f0]{\r\n    width: 100%;\r\n    margin-bottom: 10px;\r\n    align-items: center;\r\n    display: block;\r\n    width: 100%;\r\n    height: calc(2.25rem + 2px);\r\n    font-size: 1rem;\r\n    font-weight: 400;\r\n    line-height: 1.5;\r\n    color: #495057;\r\n    background-color: #fff;\r\n    background-clip: padding-box;\r\n    border: 1px solid #ced4da;\r\n    border-radius: .25rem;\r\n    box-shadow: inset 0 0 0 transparent;\r\n    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;\n}\n.camera-preview[data-v-008b81f0], .captured-photo[data-v-008b81f0] {\r\n    width: 100%;\r\n    height: 340px;\r\n    border: 2px solid #ddd;\r\n    border-radius: 8px;\r\n    -o-object-fit: cover;\r\n       object-fit: cover;\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -50622,6 +50643,7 @@ var render = function () {
                 _c("Select2", {
                   staticClass: "select2",
                   attrs: { options: _vm.beneficiaries },
+                  on: { change: _vm.updateAddress },
                   model: {
                     value: _vm.dataValues.beneficiary_id,
                     callback: function ($$v) {
@@ -50633,6 +50655,32 @@ var render = function () {
               ],
               1
             ),
+            _vm._v(" "),
+            _c("div", { staticClass: "form-group" }, [
+              _c("label", [_vm._v("Address")]),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.dataValues.address,
+                    expression: "dataValues.address",
+                  },
+                ],
+                staticClass: "form-control",
+                attrs: { type: "text", disabled: "" },
+                domProps: { value: _vm.dataValues.address },
+                on: {
+                  input: function ($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.dataValues, "address", $event.target.value)
+                  },
+                },
+              }),
+            ]),
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "col-md-6 text-center" }, [

@@ -33,7 +33,11 @@
                         </div>
                         <div class="form-group">
                             <label>Search Beneficiary</label>
-                            <Select2 class=" select2 " v-model="dataValues.beneficiary_id" :options="beneficiaries" />
+                            <Select2 class="select2" v-model="dataValues.beneficiary_id" :options="beneficiaries" @change="updateAddress" />
+                        </div>
+                        <div class="form-group">
+                            <label>Address</label>
+                            <input type="text" class="form-control" v-model="dataValues.address" disabled />
                         </div>
                     </div>
 
@@ -78,6 +82,7 @@ export default {
                 district_id: '',
                 project_id: '',
                 beneficiary_id: '',
+                address: '', 
                 photo: null,
                 capturedPhotoURL: null,
             },
@@ -99,6 +104,19 @@ export default {
                 .then(response => {
                     this.beneficiaries = response.data.data;
                 });
+        },
+        updateAddress() { 
+            // console.log(this.dataValues.beneficiary_id);
+
+            const selectedBeneficiary = this.beneficiaries.find(b => b.id == this.dataValues.beneficiary_id);
+
+            if (selectedBeneficiary) {
+                this.dataValues.address = selectedBeneficiary.address;
+                console.log("Address set to:", this.dataValues.address);
+            } else {
+                console.warn("Selected beneficiary not found!");
+                this.dataValues.address = '';
+            }
         },
         async startCamera() {
             try {
@@ -177,13 +195,14 @@ export default {
                 district_id: '',
                 project_id: '',
                 beneficiary_id: '',
+                address: '',
                 photo: null,
                 capturedPhotoURL: null,
             };
 
             this.startCamera();
         }
-    }
+    },
 };
 </script>
 
@@ -204,12 +223,8 @@ export default {
     border: 1px solid #ced4da;
     border-radius: .25rem;
     box-shadow: inset 0 0 0 transparent;
-    transition: border-color .15sease-in-out, box-shadow .15sease-in-out;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
 }
-.form-group {
-    margin-bottom: 1rem;
-}
-
 .camera-preview, .captured-photo {
     width: 100%;
     height: 340px;
@@ -217,15 +232,4 @@ export default {
     border-radius: 8px;
     object-fit: cover;
 }
-
-.alert {
-    padding: 10px;
-    font-size: 1rem;
-    margin-bottom: 15px;
-}
-.btn-sm {
-    font-size: 0.85rem;
-    padding: 6px 12px;
-}
-
 </style>
