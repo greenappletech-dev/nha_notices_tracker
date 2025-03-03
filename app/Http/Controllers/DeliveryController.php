@@ -83,7 +83,8 @@ class DeliveryController extends Controller
     public function gather_beneficiaries($id){
         return response()->json(['data' => Beneficiary::select(
         'beneficiaries.id', 
-        'beneficiaries.name as text'
+        'beneficiaries.name as text',
+        'beneficiaries.address'
         )->where('project_id',$id)->get()],200);
     }
 
