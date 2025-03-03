@@ -5286,31 +5286,36 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
     startCamera: function startCamera() {
       var _this3 = this;
       return _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-        var videoElement;
+        var constraints, videoElement;
         return _regeneratorRuntime().wrap(function _callee$(_context) {
           while (1) switch (_context.prev = _context.next) {
             case 0:
               _context.prev = 0;
+              constraints = {
+                video: {
+                  facingMode: {
+                    exact: "environment"
+                  } // Use back camera
+                }
+              };
               videoElement = _this3.$refs.camera;
-              _context.next = 4;
-              return navigator.mediaDevices.getUserMedia({
-                video: true
-              });
-            case 4:
+              _context.next = 5;
+              return navigator.mediaDevices.getUserMedia(constraints);
+            case 5:
               _this3.cameraStream = _context.sent;
               videoElement.srcObject = _this3.cameraStream;
-              _context.next = 12;
+              _context.next = 13;
               break;
-            case 8:
-              _context.prev = 8;
+            case 9:
+              _context.prev = 9;
               _context.t0 = _context["catch"](0);
               console.error("Error accessing the camera:", _context.t0);
               alert("Unable to access the camera. Please check your browser permissions.");
-            case 12:
+            case 13:
             case "end":
               return _context.stop();
           }
-        }, _callee, null, [[0, 8]]);
+        }, _callee, null, [[0, 9]]);
       }))();
     },
     capturePhoto: function capturePhoto() {

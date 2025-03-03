@@ -102,8 +102,13 @@ export default {
         },
         async startCamera() {
             try {
+                const constraints = {
+                    video: {
+                        facingMode: { exact: "environment" }, // Use back camera
+                    },
+                };
                 const videoElement = this.$refs.camera;
-                this.cameraStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                this.cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
                 videoElement.srcObject = this.cameraStream;
             } catch (error) {
                 console.error("Error accessing the camera:", error);
