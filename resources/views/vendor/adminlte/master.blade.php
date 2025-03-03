@@ -132,6 +132,13 @@
     @yield('adminlte_js')
 
     <style>
+    .select2-container--default .select2-selection--single{
+        border: none!important;
+        width: 100%;
+    }
+    .select2-container--default{
+        width: 100%!important;
+    }
     .content-wrapper {
         background-color: #F8F8F8 !important;
         position: relative;
