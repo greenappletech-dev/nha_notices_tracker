@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DeliveryHistoryController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DeliveryController;
@@ -39,5 +40,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::put('/update/{id}', [DemandNoticeTrackerController::class, 'update']);
         Route::delete('/destroy/{id}', [DemandNoticeTrackerController::class, 'destroy']);
     });
-
+    Route::prefix('notice-viewer')->group(function () {
+        Route::get('/', [DeliveryHistoryController::class, 'index']);
+    });
 }); 
