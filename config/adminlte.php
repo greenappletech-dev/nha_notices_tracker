@@ -305,6 +305,11 @@ return [
             'url' => '/deliveries',
             'icon' => 'fas fa-file-invoice',
         ],
+        [
+            'text' => 'Delivered Notice Viewer',
+            'url' => '/notice-viewer',
+            'icon' => 'fas fa-file-invoice',
+        ],
         // [
         //     'text' => 'Demand Notice',
         //     'url' => 'demandnotice',
