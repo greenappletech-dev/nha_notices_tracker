@@ -126,7 +126,7 @@ export default {
                     },
                 };
                 const videoElement = this.$refs.camera;
-                this.cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
+                this.cameraStream = await navigator.mediaDevices.getUserMedia({ video: true });
                 videoElement.srcObject = this.cameraStream;
             } catch (error) {
                 console.error("Error accessing the camera:", error);
