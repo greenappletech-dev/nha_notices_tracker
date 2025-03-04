@@ -1,12 +1,12 @@
 <template>
     <div class="container mt-4">
         <div class="d-flex justify-content-center">
-            <h2 class="mb-4">Capture Delivery</h2>
+            <h2 class="mb-4">Account Documentation</h2>
         </div>
 
         <!-- Success Notification -->
         <div v-if="showSuccessMessage" class="alert alert-success text-center">
-            Delivery saved successfully!
+            Documentation saved successfully!
         </div>
 
         <div class="card shadow-sm">
@@ -15,11 +15,9 @@
                     <div class="col-md-6">
 
                         <div class="form-group">
-                            <label>Select Type of Notice</label>
-                            <select class="form-control" v-model="dataValues.demand_id" @change="saveToLocalStorage">
-                                <option v-for="demand in demandNotices" :key="demand.id" :value="demand.id">
-                                    {{ demand.name }}
-                                </option>
+                            <label>Select Documentation Type</label>
+                            <select class="form-control" v-model="dataValues.notice_id" @change="saveToLocalStorage">
+                                <option v-for=" docs in documenttion_types"  :value="docs.id">{{ docs.name }}</option>
                             </select>
                             <small v-if="errors.demand_id" class="text-danger">{{ errors.demand_id }}</small>
                         </div>
@@ -58,7 +56,7 @@
                     </div>
 
                     <div class="col-md-6 text-center">
-                        <h5>Capture Delivery Photo</h5>
+                        <h5>Capture Photo</h5>
 
                         <video v-if="!dataValues.capturedPhotoURL" ref="camera" autoplay class="camera-preview"></video>
 
@@ -90,10 +88,8 @@
 
 <script>
 import Select2 from 'v-select2-component';
-import axios from 'axios';
-
 export default {
-    props: ['districts'],
+    props: ['districts', 'documenttion_types'],
     data() {
         return {
             cameraActive: false,
@@ -128,8 +124,8 @@ export default {
                 district_id : this.dataValues.district_id,
                 demand_id: this.dataValues.demand_id,
                 project_id: this.dataValues.project_id,
-                beneficiary_id: this.dataValues.beneficiary_id,
-                address: this.dataValues.address
+                // beneficiary_id: this.dataValues.beneficiary_id,
+                // address: this.dataValues.address
             }));
         },
         loadFromLocalStorage() {
@@ -148,6 +144,8 @@ export default {
                 });
         },
         myChangeProject(project_id) {
+            this.dataValues.address='';
+            this.dataValues.com_code='';
             axios.get(`deliveries/gather_beneficiaries/${project_id}`)
                 .then(response => {
                     this.beneficiaries = response.data.data;
@@ -228,6 +226,8 @@ export default {
                     return;
                 }
 
+            let confirmBox = confirm('Are you sure you want to save this data ?');
+            if(confirmBox){
             const formData = new FormData();
             formData.append('demand_id', this.dataValues.demand_id);
             formData.append('district_id', this.dataValues.district_id);
@@ -246,8 +246,8 @@ export default {
                 this.showSuccessMessage = true;
 
                 setTimeout(() => {
-                    this.showSuccessMessage = false;
-                }, 3000);
+                    window.location.reload();
+                }, 5000);
 
                 this.resetForm();
             })
@@ -255,8 +255,10 @@ export default {
                 console.log(error);
                 alert('Error saving delivery.');
             });
+        }
         },
         resetForm() {
+            window.location.reload();
             this.dataValues.photo = null;
             this.dataValues.capturedPhotoURL = null;
             this.startCamera();
@@ -279,7 +281,31 @@ export default {
 </script>
 
 <style scoped>
-.select2{
+    .custom-select {
+    width: 100% !important; /* Custom width */
+    height: 45px !important; /* Custom height */
+    border: 2px solid #4CAF50 !important; /* Green border */
+    border-radius: 8px !important; /* Rounded corners */
+    font-size: 16px;
+    }
+/* Style dropdown */
+    .select2-container--default .select2-dropdown {
+    background-color: #f9f9f9;
+    border: 1px solid #4CAF50;
+    }
+
+    /* Style dropdown items */
+    .select2-container--default .select2-results__option {
+    padding: 10px;
+    font-size: 16px;
+    }
+
+    /* Highlight hover effect */
+    .select2-container--default .select2-results__option--highlighted {
+    background-color: #4CAF50 !important;
+    color: white !important;
+    }
+/* .select2{
     width: 100%;
     margin-bottom: 10px;
     align-items: center;
@@ -296,7 +322,7 @@ export default {
     border-radius: .25rem;
     box-shadow: inset 0 0 0 transparent;
     transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
-}
+} */
 .camera-preview, .captured-photo {
     width: 100%;
     height: 340px;
