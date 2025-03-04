@@ -40,6 +40,10 @@ localstorage:
                             <label>Address</label>
                             <input type="text" class="form-control" v-model="dataValues.address" disabled />
                         </div>
+                        <div class="form-group">
+                            <label>ComCode</label>
+                            <input type="text" class="form-control" v-model="dataValues.com_code" disabled />
+                        </div>
                     </div>
 
                     <div class="col-md-6 text-center">
@@ -85,6 +89,7 @@ export default {
                 project_id: '',
                 beneficiary_id: '',
                 address: '', 
+                com_code:'',
                 photo: null,
                 capturedPhotoURL: null,
             },
@@ -133,7 +138,7 @@ export default {
             const selectedBeneficiary = this.beneficiaries.find(b => b.id == this.dataValues.beneficiary_id);
             if (selectedBeneficiary) {
                 this.dataValues.address = selectedBeneficiary.address;
-                console.log("Address set to:", this.dataValues.address);
+                this.dataValues.com_code = selectedBeneficiary.com_code;
             } else {
                 console.warn("Selected beneficiary not found!");
                 this.dataValues.address = '';

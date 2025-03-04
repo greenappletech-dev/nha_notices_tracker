@@ -22,7 +22,6 @@ class DeliveryController extends Controller
         return view('deliveries', compact('districts'));
     }
     public function store(Request $request){
-
         $request->validate([
             'notice_id' => 'required',
             'project_id' => 'required',
@@ -84,8 +83,9 @@ class DeliveryController extends Controller
         return response()->json(['data' => Beneficiary::select(
         'beneficiaries.id', 
         'beneficiaries.name as text',
-        'beneficiaries.address'
-        )->where('project_id',$id)->get()],200);
+        'beneficiaries.address',
+        'beneficiaries.com_code',
+        )->where('project_id',$id)->orderBy('com_code')->get()],200);
     }
 
 }

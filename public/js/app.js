@@ -5256,6 +5256,10 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
 //
 //
 //
+//
+//
+//
+//
 
 
 
@@ -5272,6 +5276,7 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
         project_id: '',
         beneficiary_id: '',
         address: '',
+        com_code: '',
         photo: null,
         capturedPhotoURL: null
       },
@@ -5325,7 +5330,7 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
       });
       if (selectedBeneficiary) {
         this.dataValues.address = selectedBeneficiary.address;
-        console.log("Address set to:", this.dataValues.address);
+        this.dataValues.com_code = selectedBeneficiary.com_code;
       } else {
         console.warn("Selected beneficiary not found!");
         this.dataValues.address = '';
@@ -50847,6 +50852,32 @@ var render = function () {
                       return
                     }
                     _vm.$set(_vm.dataValues, "address", $event.target.value)
+                  },
+                },
+              }),
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "form-group" }, [
+              _c("label", [_vm._v("ComCode")]),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.dataValues.com_code,
+                    expression: "dataValues.com_code",
+                  },
+                ],
+                staticClass: "form-control",
+                attrs: { type: "text", disabled: "" },
+                domProps: { value: _vm.dataValues.com_code },
+                on: {
+                  input: function ($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.dataValues, "com_code", $event.target.value)
                   },
                 },
               }),
