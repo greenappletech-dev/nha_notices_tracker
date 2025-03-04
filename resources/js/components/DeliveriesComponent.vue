@@ -154,7 +154,7 @@ export default {
                         facingMode: { exact: "environment" }, // Use back camera
                     },
                 };
-                // const videoElement = this.$refs.camera;
+                const videoElement = this.$refs.camera;
                 this.cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
                 videoElement.srcObject = this.cameraStream;
             } catch (error) {
