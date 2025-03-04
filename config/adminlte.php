@@ -301,17 +301,17 @@ return [
     'menu' => [
         // Navbar items:
         [
-            'text' => 'Deliveries',
+            'text' => 'Account Documentation',
             'url' => '/deliveries',
             'icon' => 'fas fa-file-invoice',
         ],
         [
-            'text' => 'Delivered Notice Viewer',
+            'text' => ' View Account Documentation',
             'url' => '/notice-viewer',
             'icon' => 'fas fa-file-invoice',
         ],
         [
-            'text' => 'Type of Notice',
+            'text' => 'Documentation Type',
             'url' => 'demandnotice',
             'icon' => 'fas fa-envelope-open-text',
         ],
