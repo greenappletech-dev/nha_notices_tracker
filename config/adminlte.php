@@ -310,11 +310,11 @@ return [
             'url' => '/notice-viewer',
             'icon' => 'fas fa-file-invoice',
         ],
-        // [
-        //     'text' => 'Demand Notice',
-        //     'url' => 'demandnotice',
-        //     'icon' => 'fas fa-envelope-open-text',
-        // ],
+        [
+            'text' => 'Type of Notice',
+            'url' => 'demandnotice',
+            'icon' => 'fas fa-envelope-open-text',
+        ],
 
     ],
 
