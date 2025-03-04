@@ -164,15 +164,20 @@ export default {
             this.saveToLocalStorage();
         },
         async startCamera() {
-    try {
-        const videoElement = this.$refs.camera;
-        this.cameraStream = await navigator.mediaDevices.getUserMedia({ constraints });
-        videoElement.srcObject = this.cameraStream;
-        this.cameraActive = true; // Show Capture Photo button
-    } catch (error) {
-        console.error("Error accessing the camera:", error);
-        alert("Unable to access the camera. Please check your browser permissions.");
-    }
+            try {
+                const constraints = {
+                    video: {
+                        facingMode: { exact: "environment" }, // Use back camera
+                    },
+                };
+                const videoElement = this.$refs.camera;
+                this.cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
+                videoElement.srcObject = this.cameraStream;
+                this.cameraActive = true; // Show Capture Photo button
+            } catch (error) {
+                console.error("Error accessing the camera:", error);
+                alert("Unable to access the camera. Please check your browser permissions.");
+            }
 },
 
         async capturePhoto() {

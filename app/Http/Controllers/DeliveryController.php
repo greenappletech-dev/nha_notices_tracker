@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\City;
+use App\Models\DemandNoticeTracker;
 use Illuminate\Support\Facades\File;
 use App\Models\Project;
 use App\Models\District;
 use App\Models\Delivery;
 use App\Models\Province;
 use App\Models\Beneficiary;
-use App\Models\DemandNoticeTracker;
 use Illuminate\Http\Request;
 
 class DeliveryController extends Controller
@@ -20,7 +20,8 @@ class DeliveryController extends Controller
             'districts.id', 
             'districts.name', 
         )->get();
-        return view('deliveries', compact('districts'));
+        $documenttion_types = DemandNoticeTracker::get();
+        return view('deliveries', compact('districts', 'documenttion_types'));
     }
     public function store(Request $request){
         // dd($request->all());
@@ -77,23 +78,25 @@ class DeliveryController extends Controller
             'projects.id', 
             'projects.name as text' 
         )
-        ->whereIn('city_id', $cities_id_list)->get();
+        ->whereIn('city_id', $cities_id_list)->orderBy('name', 'Asc')->get();
 
         return response()->json(['data' => $projects], 200);
     }
     public function gather_beneficiaries($id){
+        // $dataArr = [];
+        // $current_year = date('Y');
+        // $current_month = date('m');
+        // $delivery_list = Delivery::whereMonth('date_captured', $current_month)->whereYear('date_captured', $current_year)->where('project_id', $id)->get();
+        // foreach($delivery_list as $delivery){
+        //     $dataArr[] = $delivery->beneficiary_id;
+        // }
+        // // dd($dataArr);
         return response()->json(['data' => Beneficiary::select(
         'beneficiaries.id', 
-        'beneficiaries.name as text',
+        'beneficiaries.name as text',   
         'beneficiaries.address',
         'beneficiaries.com_code',
-        )->where('project_id',$id)->orderBy('com_code')->get()],200);
-    }
-
-    public function getNoticeTypes()
-    {
-        $demandNotice = DemandNoticeTracker::all();
-        return response()->json(['data' => $noticeTypes], 200);
+        )->where('project_id',$id)->orderBy('name', 'Asc')->get()],200);
     }
 
 }
