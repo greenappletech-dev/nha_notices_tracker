@@ -108,8 +108,8 @@ export default {
                 notice_id: this.dataValues.notice_id,
                 district_id: this.dataValues.district_id,
                 project_id: this.dataValues.project_id,
-                beneficiary_id: this.dataValues.beneficiary_id,
-                address: this.dataValues.address
+                // beneficiary_id: this.dataValues.beneficiary_id,
+                // address: this.dataValues.address
             }));
         },
         loadFromLocalStorage() {
@@ -128,6 +128,8 @@ export default {
                 });
         },
         myChangeProject(project_id) {
+            this.dataValues.address='';
+            this.dataValues.com_code='';
             axios.get(`deliveries/gather_beneficiaries/${project_id}`)
                 .then(response => {
                     this.beneficiaries = response.data.data;
@@ -147,8 +149,13 @@ export default {
         },
         async startCamera() {
             try {
-                const videoElement = this.$refs.camera;
-                this.cameraStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                const constraints = {
+                    video: {
+                        facingMode: { exact: "environment" }, // Use back camera
+                    },
+                };
+                // const videoElement = this.$refs.camera;
+                this.cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
                 videoElement.srcObject = this.cameraStream;
             } catch (error) {
                 console.error("Error accessing the camera:", error);
@@ -201,7 +208,7 @@ export default {
 
                 setTimeout(() => {
                     this.showSuccessMessage = false;
-                }, 3000);
+                }, 5000);
 
                 this.resetForm();
             })
@@ -211,6 +218,7 @@ export default {
             });
         },
         resetForm() {
+            window.location.reload();
             this.dataValues.photo = null;
             this.dataValues.capturedPhotoURL = null;
             this.startCamera();

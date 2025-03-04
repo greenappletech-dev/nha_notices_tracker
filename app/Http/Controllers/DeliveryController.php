@@ -80,12 +80,20 @@ class DeliveryController extends Controller
         return response()->json(['data' => $projects], 200);
     }
     public function gather_beneficiaries($id){
+        $dataArr = [];
+        $current_year = date('Y');
+        $current_month = date('m');
+        $delivery_list = Delivery::whereMonth('date_captured', $current_month)->whereYear('date_captured', $current_year)->where('project_id', $id)->get();
+        foreach($delivery_list as $delivery){
+            $dataArr[] = $delivery->beneficiary_id;
+        }
+        // dd($dataArr);
         return response()->json(['data' => Beneficiary::select(
         'beneficiaries.id', 
-        'beneficiaries.name as text',
+        'beneficiaries.name as text',   
         'beneficiaries.address',
         'beneficiaries.com_code',
-        )->where('project_id',$id)->orderBy('com_code')->get()],200);
+        )->whereNotIn('beneficiaries.id',$dataArr)->where('project_id',$id)->orderBy('com_code')->get()],200);
     }
 
 }
