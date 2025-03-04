@@ -2,12 +2,12 @@ localstorage:
 <template>
     <div class="container mt-4">
         <div class="d-flex justify-content-center">
-            <h2 class="mb-4">Capture Delivery</h2>
+            <h2 class="mb-4">Account Documentation</h2>
         </div>
 
         <!-- Success Notification -->
         <div v-if="showSuccessMessage" class="alert alert-success text-center">
-            Delivery saved successfully!
+            Documentation saved successfully!
         </div>
 
         <div class="card shadow-sm">
@@ -16,10 +16,9 @@ localstorage:
                     <!-- Left Side: Form Inputs -->
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label>Select Type of Notice</label>
+                            <label>Select Documentation Type</label>
                             <select class="form-control" v-model="dataValues.notice_id" @change="saveToLocalStorage">
-                                <option value="1">Billing Notice</option>
-                                <option value="2">Demand Notice</option>
+                                <option v-for=" docs in documenttion_types"  :value="docs.id">{{ docs.name }}</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -30,11 +29,11 @@ localstorage:
                         </div>
                         <div class="form-group">
                             <label>Select Project</label>
-                            <Select2 class=" select2 custom-select-style" v-model="dataValues.project_id" :options="projectList" @change="myChangeProject(dataValues.project_id)" />
+                            <Select2 class=" custom-select" v-model="dataValues.project_id" :options="projectList" @change="myChangeProject(dataValues.project_id)" />
                         </div>
                         <div class="form-group">
                             <label>Search Beneficiary</label>
-                            <Select2 class="select2" v-model="dataValues.beneficiary_id" :options="beneficiaries" @change="updateAddress" />
+                            <Select2 class="custom-select" v-model="dataValues.beneficiary_id" :options="beneficiaries" @change="updateAddress" />
                         </div>
                         <div class="form-group">
                             <label>Address</label>
@@ -47,7 +46,7 @@ localstorage:
                     </div>
 
                     <div class="col-md-6 text-center">
-                        <h5>Capture Delivery Photo</h5>
+                        <h5>Capture Photo</h5>
 
                         <video v-if="!dataValues.capturedPhotoURL" ref="camera" autoplay class="camera-preview"></video>
 
@@ -74,10 +73,8 @@ localstorage:
 
 <script>
 import Select2 from 'v-select2-component';
-import axios from 'axios';
-
 export default {
-    props: ['districts'],
+    props: ['districts', 'documenttion_types'],
     data() {
         return {
             showSuccessMessage: false,
@@ -155,7 +152,7 @@ export default {
                     },
                 };
                 const videoElement = this.$refs.camera;
-                this.cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
+                this.cameraStream = await navigator.mediaDevices.getUserMedia({video:true});
                 videoElement.srcObject = this.cameraStream;
             } catch (error) {
                 console.error("Error accessing the camera:", error);
@@ -189,6 +186,8 @@ export default {
             }
         },
         storeData() {
+            let confirmBox = confirm('Are you sure you want to save this data ?');
+            if(confirmBox){
             const formData = new FormData();
             formData.append('notice_id', this.dataValues.notice_id);
             formData.append('district_id', this.dataValues.district_id);
@@ -207,7 +206,7 @@ export default {
                 this.showSuccessMessage = true;
 
                 setTimeout(() => {
-                    this.showSuccessMessage = false;
+                    window.location.reload();
                 }, 5000);
 
                 this.resetForm();
@@ -216,6 +215,7 @@ export default {
                 console.log(error);
                 alert('Error saving delivery.');
             });
+        }
         },
         resetForm() {
             window.location.reload();
@@ -232,7 +232,31 @@ export default {
 </script>
 
 <style scoped>
-.select2{
+    .custom-select {
+    width: 100% !important; /* Custom width */
+    height: 45px !important; /* Custom height */
+    border: 2px solid #4CAF50 !important; /* Green border */
+    border-radius: 8px !important; /* Rounded corners */
+    font-size: 16px;
+    }
+/* Style dropdown */
+    .select2-container--default .select2-dropdown {
+    background-color: #f9f9f9;
+    border: 1px solid #4CAF50;
+    }
+
+    /* Style dropdown items */
+    .select2-container--default .select2-results__option {
+    padding: 10px;
+    font-size: 16px;
+    }
+
+    /* Highlight hover effect */
+    .select2-container--default .select2-results__option--highlighted {
+    background-color: #4CAF50 !important;
+    color: white !important;
+    }
+/* .select2{
     width: 100%;
     margin-bottom: 10px;
     align-items: center;
@@ -249,7 +273,7 @@ export default {
     border-radius: .25rem;
     box-shadow: inset 0 0 0 transparent;
     transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
-}
+} */
 .camera-preview, .captured-photo {
     width: 100%;
     height: 340px;

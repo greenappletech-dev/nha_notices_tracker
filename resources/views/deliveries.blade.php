@@ -4,7 +4,7 @@
 @section('content')
 
     <div id="app">
-        <deliveries-component :districts="{{ $districts }}"></deliveries-component>
+        <deliveries-component :districts="{{ $districts }}" :documenttion_types="{{ $documenttion_types }}"></deliveries-component>
     </div>
 
 
