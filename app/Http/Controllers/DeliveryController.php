@@ -24,8 +24,9 @@ class DeliveryController extends Controller
         return view('deliveries', compact('districts', 'documenttion_types'));
     }
     public function store(Request $request){
+        // dd($request->all());
         $request->validate([
-            'notice_id' => 'required',
+            'demand_id' => 'required',
             'project_id' => 'required',
             'beneficiary_id' => 'required',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
@@ -50,7 +51,7 @@ class DeliveryController extends Controller
         }
 
         $delivery = Delivery::create([
-            'notice_type_id' => $request->notice_id,
+            'demand_id' => $request->demand_id,
             'project_id' => $request->project_id,
             'beneficiary_id' => $request->beneficiary_id,
             'photo' => $photoPath,

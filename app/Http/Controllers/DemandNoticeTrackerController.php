@@ -11,6 +11,7 @@ class DemandNoticeTrackerController extends Controller
     // Show the demand notice page
     public function index()
     {
+
         return view('masterdata.demandnotice');
     }
 
@@ -35,7 +36,7 @@ class DemandNoticeTrackerController extends Controller
         return response()->json([
             'message' => 'Demand Notice successfully created!',
             'data' => $demandNotice,
-        ], 201); // Changed status code to 201
+        ], 200);
     }
 
     // Update an existing record
@@ -59,7 +60,7 @@ class DemandNoticeTrackerController extends Controller
     // Delete a record
     public function destroy($id)
     {
-        $demandNotice = DemandNoticeTracker::findOrFail($id);
+        $demandNotice = DemandNoticeTracker::where('id', $id)->first();
         $demandNotice->delete();
 
         return response()->json([

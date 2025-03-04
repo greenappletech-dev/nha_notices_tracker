@@ -1,13 +1,12 @@
 <template>
-    <div class="p-2"    >
+    <div class="p-2">
         <div class="m-4 mt-4">
-            <div class="d-flex justify-content-end ">
+            <div class="d-flex justify-content-end">
                 <button class="btn btn-primary" v-on:click="create">
                     <i class="fas fa-plus"></i> Create New
                 </button>
             </div>
-            <div class="card mb-4 ">
-              
+            <div class="card mb-4">
                 <div class="card-header"><b>Type of Notices List</b></div>
                 <div class="card-body">
                     <v-client-table :data="data" :columns="columns" :options="options">
@@ -23,15 +22,16 @@
                 </div>
             </div>
 
+            <!-- Modal for Creating & Editing -->
             <div class="modal" id="create-demand">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <h5 class="modal-title bg-primary text-center pt-2 pb-2" style="font-weight:bold;">
-                            {{ isEdit ? 'Update Demand Notice' : 'Create Demand Notice'}}
+                            {{ isEdit ? 'Update Notice' : 'Create Notice'}}
                         </h5>
                         <div class="modal-body">
                             <div class="form-group">
-                                <label for="name">Demand Notice</label>
+                                <label for="name">Notice Name</label>
                                 <input type="text" class="form-control" id="name" v-model="name"
                                     :class="{ 'border border-danger' : errors.name }"
                                 />
@@ -39,9 +39,9 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button @click="closeModal" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button v-if="!isEdit" v-on:click="createRecord" type="button" class="btn btn-primary">Save changes</button>
-                            <button v-else v-on:click="updateRecord" type="button" class="btn btn-primary">Save changes</button>
+                            <button @click="closeModal" type="button" class="btn btn-secondary">Close</button>
+                            <button v-if="!isEdit" v-on:click="createRecord" type="button" class="btn btn-primary">Save</button>
+                            <button v-else v-on:click="updateRecord" type="button" class="btn btn-primary">Update</button>
                         </div>
                     </div>
                 </div>
@@ -51,6 +51,8 @@
 </template>
 
 <script>
+import Swal from "sweetalert2";
+
 export default {
     data() {
         return {
@@ -77,7 +79,6 @@ export default {
         },
         show() {
             axios.get('/demandnotice/show').then(response => {
-                console.log(response.data.data); 
                 this.data = response.data.data;
             }).catch(error => {
                 console.error('Error fetching data:', error);
@@ -85,33 +86,22 @@ export default {
         },
         closeModal() {
             $('#create-demand').modal('hide');
+            this.init();
         },
         create() {
-            console.log('test');
-            // this.isEdit = false;
-            // this.init();
+            this.isEdit = false;
+            this.init();
             $('#create-demand').modal('show');
         },
         createRecord() {
             axios.post('/demandnotice/store', { name: this.name })
                 .then(response => {
-                    this.$fire({
-                        title: 'Successfully Saved!',
-                        text: response.data.message,
-                        type: 'success',
-                        timer: 3000,
-                    });
+                    Swal.fire("Success!", "Notice has been created.", "success");
                     this.show();
-                    this.init();
                     this.closeModal();
                 })
                 .catch(error => {
-                    this.$fire({
-                        title: 'Error Saving',
-                        text: error.response.data.message,
-                        type: 'warning',
-                        timer: 3000,
-                    });
+                    Swal.fire("Error!", "Failed to create demand notice.", "error");
                     this.errors = error.response.data.errors;
                 });
         },
@@ -119,55 +109,35 @@ export default {
             this.isEdit = true;
             this.id = data.row.id;
             this.name = data.row.name;
-            $('#create-demand').modal('show'); // Fix modal ID
+            $('#create-demand').modal('show');
         },
         updateRecord() {
-            axios.put('/demandnotice/update/' + this.id, { name: this.name })
+            axios.put(`/demandnotice/update/${this.id}`, { name: this.name })
                 .then(response => {
-                    this.$fire({
-                        title: 'Successfully Updated!',
-                        text: response.data.message,
-                        type: 'success',
-                        timer: 3000,
-                    });
+                    Swal.fire("Updated!", "Notice has been updated.", "success");
                     this.show();
-                    this.init();
-                    $('#create-demand').modal('hide'); // Fix modal ID
+                    this.closeModal();
                 })
                 .catch(error => {
-                    this.$fire({
-                        title: 'Error Saving',
-                        text: error.response.data.message,
-                        type: 'warning',
-                        timer: 3000,
-                    });
+                    Swal.fire("Error!", "Failed to update demand notice.", "error");
                     this.errors = error.response.data.errors;
                 });
         },
         destroy(data) {
-            if (confirm('Are you sure you want to delete this record?')) {
-                axios.delete('/demandnotice/destroy/' + data.row.id)
-                    .then(response => {
-                        this.$fire({
-                            title: 'Successfully Deleted!',
-                            text: response.data.message,
-                            type: 'success',
-                            timer: 3000,
-                        });
-                        this.show();
-                    })
-                    .catch(error => {
-                        this.$fire({
-                            title: 'Error',
-                            text: error.response ? error.response.data.message : 'Internal Server Error',
-                            type: 'warning',
-                            timer: 3000,
-                        });
-                        this.errors = error.response?.data.errors || [];
-                    });
-            }
-        },
+            if(confirm('Are you sure you want to delete!')){
+                axios.get('/demandnotice/destroy/' + data.row.id)                
+                .then(response => {
+                    Swal.fire("Success!", "Notice has been deleted.", "success");
+                    this.show();
+                    this.closeModal();
+                })
+                .catch(error => {
+                    Swal.fire("Error!", "Failed to delete demand notice.", "error");
+                    this.errors = error.response.data.errors;
+                });
+        }
     },
+},
     mounted() {
         this.show();
         this.init();
@@ -186,10 +156,6 @@ export default {
 
 .form-group {
     margin-bottom: 1rem;
-}
-
-.form-check {
-    margin-top: 0.5rem;
 }
 
 .breadcrumb {
