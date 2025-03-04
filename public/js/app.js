@@ -5260,6 +5260,22 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -5267,11 +5283,13 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
   props: ['districts'],
   data: function data() {
     return {
+      cameraActive: false,
       showSuccessMessage: false,
       myValue: '',
+      errors: {},
       myOptions: ['op1', 'op2', 'op3'],
       dataValues: {
-        notice_id: '',
+        demand_id: '',
         district_id: '',
         project_id: '',
         beneficiary_id: '',
@@ -5282,7 +5300,8 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
       },
       projectList: [],
       beneficiaries: [],
-      cameraStream: null
+      cameraStream: null,
+      demandNotices: []
     };
   },
   components: {
@@ -5290,12 +5309,13 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
   },
   created: function created() {
     this.loadFromLocalStorage();
+    this.fetchDemandNotices();
   },
   methods: {
     saveToLocalStorage: function saveToLocalStorage() {
       localStorage.setItem('dataValues', JSON.stringify({
-        notice_id: this.dataValues.notice_id,
         district_id: this.dataValues.district_id,
+        demand_id: this.dataValues.demand_id,
         project_id: this.dataValues.project_id,
         beneficiary_id: this.dataValues.beneficiary_id,
         address: this.dataValues.address
@@ -5348,23 +5368,24 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
               videoElement = _this4.$refs.camera;
               _context.next = 4;
               return navigator.mediaDevices.getUserMedia({
-                video: true
+                constraints: constraints
               });
             case 4:
               _this4.cameraStream = _context.sent;
               videoElement.srcObject = _this4.cameraStream;
-              _context.next = 12;
+              _this4.cameraActive = true; // Show Capture Photo button
+              _context.next = 13;
               break;
-            case 8:
-              _context.prev = 8;
+            case 9:
+              _context.prev = 9;
               _context.t0 = _context["catch"](0);
               console.error("Error accessing the camera:", _context.t0);
               alert("Unable to access the camera. Please check your browser permissions.");
-            case 12:
+            case 13:
             case "end":
               return _context.stop();
           }
-        }, _callee, null, [[0, 8]]);
+        }, _callee, null, [[0, 9]]);
       }))();
     },
     capturePhoto: function capturePhoto() {
@@ -5391,7 +5412,8 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
                 type: "image/png"
               });
               _this5.stopCamera();
-            case 12:
+              _this5.cameraActive = false;
+            case 13:
             case "end":
               return _context2.stop();
           }
@@ -5413,8 +5435,27 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
     },
     storeData: function storeData() {
       var _this6 = this;
+      this.errors = {};
+      if (!this.dataValues.demand_id) {
+        this.errors.demand_id = "Please select a type of notice.";
+      }
+      if (!this.dataValues.district_id) {
+        this.errors.district_id = "Please select a district.";
+      }
+      if (!this.dataValues.project_id) {
+        this.errors.project_id = "Please select a project.";
+      }
+      if (!this.dataValues.beneficiary_id) {
+        this.errors.beneficiary_id = "Please select a beneficiary.";
+      }
+      if (!this.dataValues.photo) {
+        this.errors.photo = "Please capture a delivery photo.";
+      }
+      if (Object.keys(this.errors).length > 0) {
+        return;
+      }
       var formData = new FormData();
-      formData.append('notice_id', this.dataValues.notice_id);
+      formData.append('demand_id', this.dataValues.demand_id);
       formData.append('district_id', this.dataValues.district_id);
       formData.append('project_id', this.dataValues.project_id);
       formData.append('beneficiary_id', this.dataValues.beneficiary_id);
@@ -5441,6 +5482,14 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
       this.dataValues.photo = null;
       this.dataValues.capturedPhotoURL = null;
       this.startCamera();
+    },
+    fetchDemandNotices: function fetchDemandNotices() {
+      var _this7 = this;
+      axios__WEBPACK_IMPORTED_MODULE_1___default().get('/demandnotice/show').then(function (response) {
+        _this7.demandNotices = response.data.data;
+      })["catch"](function (error) {
+        console.error("Error fetching demand notices:", error);
+      });
     },
     mounted: function mounted() {
       this.selectDistrict();
@@ -5549,6 +5598,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var sweetalert2__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! sweetalert2 */ "./node_modules/sweetalert2/dist/sweetalert2.all.js");
+/* harmony import */ var sweetalert2__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(sweetalert2__WEBPACK_IMPORTED_MODULE_0__);
 //
 //
 //
@@ -5602,6 +5653,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -5629,7 +5681,6 @@ __webpack_require__.r(__webpack_exports__);
     show: function show() {
       var _this = this;
       axios.get('/demandnotice/show').then(function (response) {
-        console.log(response.data.data);
         _this.data = response.data.data;
       })["catch"](function (error) {
         console.error('Error fetching data:', error);
@@ -5637,11 +5688,11 @@ __webpack_require__.r(__webpack_exports__);
     },
     closeModal: function closeModal() {
       $('#create-demand').modal('hide');
+      this.init();
     },
     create: function create() {
-      console.log('test');
-      // this.isEdit = false;
-      // this.init();
+      this.isEdit = false;
+      this.init();
       $('#create-demand').modal('show');
     },
     createRecord: function createRecord() {
@@ -5649,22 +5700,11 @@ __webpack_require__.r(__webpack_exports__);
       axios.post('/demandnotice/store', {
         name: this.name
       }).then(function (response) {
-        _this2.$fire({
-          title: 'Successfully Saved!',
-          text: response.data.message,
-          type: 'success',
-          timer: 3000
-        });
+        sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire("Success!", "Notice has been created.", "success");
         _this2.show();
-        _this2.init();
         _this2.closeModal();
       })["catch"](function (error) {
-        _this2.$fire({
-          title: 'Error Saving',
-          text: error.response.data.message,
-          type: 'warning',
-          timer: 3000
-        });
+        sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire("Error!", "Failed to create demand notice.", "error");
         _this2.errors = error.response.data.errors;
       });
     },
@@ -5672,52 +5712,31 @@ __webpack_require__.r(__webpack_exports__);
       this.isEdit = true;
       this.id = data.row.id;
       this.name = data.row.name;
-      $('#create-demand').modal('show'); // Fix modal ID
+      $('#create-demand').modal('show');
     },
     updateRecord: function updateRecord() {
       var _this3 = this;
-      axios.put('/demandnotice/update/' + this.id, {
+      axios.put("/demandnotice/update/".concat(this.id), {
         name: this.name
       }).then(function (response) {
-        _this3.$fire({
-          title: 'Successfully Updated!',
-          text: response.data.message,
-          type: 'success',
-          timer: 3000
-        });
+        sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire("Updated!", "Notice has been updated.", "success");
         _this3.show();
-        _this3.init();
-        $('#create-demand').modal('hide'); // Fix modal ID
+        _this3.closeModal();
       })["catch"](function (error) {
-        _this3.$fire({
-          title: 'Error Saving',
-          text: error.response.data.message,
-          type: 'warning',
-          timer: 3000
-        });
+        sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire("Error!", "Failed to update demand notice.", "error");
         _this3.errors = error.response.data.errors;
       });
     },
     destroy: function destroy(data) {
       var _this4 = this;
-      if (confirm('Are you sure you want to delete this record?')) {
-        axios["delete"]('/demandnotice/destroy/' + data.row.id).then(function (response) {
-          _this4.$fire({
-            title: 'Successfully Deleted!',
-            text: response.data.message,
-            type: 'success',
-            timer: 3000
-          });
+      if (confirm('Are you sure you want to delete!')) {
+        axios.get('/demandnotice/destroy/' + data.row.id).then(function (response) {
+          sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire("Success!", "Notice has been deleted.", "success");
           _this4.show();
+          _this4.closeModal();
         })["catch"](function (error) {
-          var _error$response;
-          _this4.$fire({
-            title: 'Error',
-            text: error.response ? error.response.data.message : 'Internal Server Error',
-            type: 'warning',
-            timer: 3000
-          });
-          _this4.errors = ((_error$response = error.response) === null || _error$response === void 0 ? void 0 : _error$response.data.errors) || [];
+          sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire("Error!", "Failed to delete demand notice.", "error");
+          _this4.errors = error.response.data.errors;
         });
       }
     }
@@ -10330,7 +10349,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.p-5[data-v-e8ee0e42] {\r\n    padding: 3rem !important;\n}\n.card[data-v-e8ee0e42] {\r\n    margin-top: 1rem;\n}\n.form-group[data-v-e8ee0e42] {\r\n    margin-bottom: 1rem;\n}\n.form-check[data-v-e8ee0e42] {\r\n    margin-top: 0.5rem;\n}\n.breadcrumb[data-v-e8ee0e42] {\r\n    background-color: white;\r\n    font-size: 18px;\r\n    font-weight: bold;\n}\n.breadcrumb-item + .breadcrumb-item[data-v-e8ee0e42]::before {\r\n    content: '>';\r\n    color: #6c757d;\r\n    padding: 0 0.5rem;\n}\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.p-5[data-v-e8ee0e42] {\r\n    padding: 3rem !important;\n}\n.card[data-v-e8ee0e42] {\r\n    margin-top: 1rem;\n}\n.form-group[data-v-e8ee0e42] {\r\n    margin-bottom: 1rem;\n}\n.breadcrumb[data-v-e8ee0e42] {\r\n    background-color: white;\r\n    font-size: 18px;\r\n    font-weight: bold;\n}\n.breadcrumb-item + .breadcrumb-item[data-v-e8ee0e42]::before {\r\n    content: '>';\r\n    color: #6c757d;\r\n    padding: 0 0.5rem;\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -50694,8 +50713,8 @@ var render = function () {
                     {
                       name: "model",
                       rawName: "v-model",
-                      value: _vm.dataValues.notice_id,
-                      expression: "dataValues.notice_id",
+                      value: _vm.dataValues.demand_id,
+                      expression: "dataValues.demand_id",
                     },
                   ],
                   staticClass: "form-control",
@@ -50712,7 +50731,7 @@ var render = function () {
                           })
                         _vm.$set(
                           _vm.dataValues,
-                          "notice_id",
+                          "demand_id",
                           $event.target.multiple
                             ? $$selectedVal
                             : $$selectedVal[0]
@@ -50722,16 +50741,27 @@ var render = function () {
                     ],
                   },
                 },
-                [
-                  _c("option", { attrs: { value: "1" } }, [
-                    _vm._v("Billing Notice"),
-                  ]),
-                  _vm._v(" "),
-                  _c("option", { attrs: { value: "2" } }, [
-                    _vm._v("Demand Notice"),
-                  ]),
-                ]
+                _vm._l(_vm.demandNotices, function (demand) {
+                  return _c(
+                    "option",
+                    { key: demand.id, domProps: { value: demand.id } },
+                    [
+                      _vm._v(
+                        "\n                                " +
+                          _vm._s(demand.name) +
+                          "\n                            "
+                      ),
+                    ]
+                  )
+                }),
+                0
               ),
+              _vm._v(" "),
+              _vm.errors.demand_id
+                ? _c("small", { staticClass: "text-danger" }, [
+                    _vm._v(_vm._s(_vm.errors.demand_id)),
+                  ])
+                : _vm._e(),
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "form-group" }, [
@@ -50781,6 +50811,12 @@ var render = function () {
                 }),
                 0
               ),
+              _vm._v(" "),
+              _vm.errors.district_id
+                ? _c("small", { staticClass: "text-danger" }, [
+                    _vm._v(_vm._s(_vm.errors.district_id)),
+                  ])
+                : _vm._e(),
             ]),
             _vm._v(" "),
             _c(
@@ -50805,6 +50841,12 @@ var render = function () {
                     expression: "dataValues.project_id",
                   },
                 }),
+                _vm._v(" "),
+                _vm.errors.project_id
+                  ? _c("small", { staticClass: "text-danger" }, [
+                      _vm._v(_vm._s(_vm.errors.project_id)),
+                    ])
+                  : _vm._e(),
               ],
               1
             ),
@@ -50827,6 +50869,12 @@ var render = function () {
                     expression: "dataValues.beneficiary_id",
                   },
                 }),
+                _vm._v(" "),
+                _vm.errors.beneficiary_id
+                  ? _c("small", { staticClass: "text-danger" }, [
+                      _vm._v(_vm._s(_vm.errors.beneficiary_id)),
+                    ])
+                  : _vm._e(),
               ],
               1
             ),
@@ -50905,25 +50953,33 @@ var render = function () {
             _c("canvas", { ref: "canvas", staticClass: "d-none" }),
             _vm._v(" "),
             _c("div", { staticClass: "mt-3" }, [
-              !_vm.dataValues.capturedPhotoURL
+              !_vm.cameraActive && !_vm.dataValues.capturedPhotoURL
                 ? _c(
                     "button",
                     {
                       staticClass: "btn btn-success btn-sm mx-1",
                       on: { click: _vm.startCamera },
                     },
-                    [_vm._v("Start Camera")]
+                    [
+                      _vm._v(
+                        "\n                            Start Camera\n                        "
+                      ),
+                    ]
                   )
                 : _vm._e(),
               _vm._v(" "),
-              !_vm.dataValues.capturedPhotoURL
+              _vm.cameraActive && !_vm.dataValues.capturedPhotoURL
                 ? _c(
                     "button",
                     {
                       staticClass: "btn btn-primary btn-sm mx-1",
                       on: { click: _vm.capturePhoto },
                     },
-                    [_vm._v("Capture Photo")]
+                    [
+                      _vm._v(
+                        "\n                            Capture Photo\n                        "
+                      ),
+                    ]
                   )
                 : _vm._e(),
               _vm._v(" "),
@@ -50934,7 +50990,11 @@ var render = function () {
                       staticClass: "btn btn-warning btn-sm mx-1",
                       on: { click: _vm.retakePhoto },
                     },
-                    [_vm._v("Retake Photo")]
+                    [
+                      _vm._v(
+                        "\n                            Retake Photo\n                        "
+                      ),
+                    ]
                   )
                 : _vm._e(),
             ]),
@@ -51197,11 +51257,7 @@ var render = function () {
               [
                 _vm._v(
                   "\n                        " +
-                    _vm._s(
-                      _vm.isEdit
-                        ? "Update Demand Notice"
-                        : "Create Demand Notice"
-                    ) +
+                    _vm._s(_vm.isEdit ? "Update Notice" : "Create Notice") +
                     "\n                    "
                 ),
               ]
@@ -51210,7 +51266,7 @@ var render = function () {
             _c("div", { staticClass: "modal-body" }, [
               _c("div", { staticClass: "form-group" }, [
                 _c("label", { attrs: { for: "name" } }, [
-                  _vm._v("Demand Notice"),
+                  _vm._v("Notice Name"),
                 ]),
                 _vm._v(" "),
                 _c("input", {
@@ -51249,7 +51305,7 @@ var render = function () {
                 "button",
                 {
                   staticClass: "btn btn-secondary",
-                  attrs: { type: "button", "data-dismiss": "modal" },
+                  attrs: { type: "button" },
                   on: { click: _vm.closeModal },
                 },
                 [_vm._v("Close")]
@@ -51263,7 +51319,7 @@ var render = function () {
                       attrs: { type: "button" },
                       on: { click: _vm.createRecord },
                     },
-                    [_vm._v("Save changes")]
+                    [_vm._v("Save")]
                   )
                 : _c(
                     "button",
@@ -51272,7 +51328,7 @@ var render = function () {
                       attrs: { type: "button" },
                       on: { click: _vm.updateRecord },
                     },
-                    [_vm._v("Save changes")]
+                    [_vm._v("Update")]
                   ),
             ]),
           ]),

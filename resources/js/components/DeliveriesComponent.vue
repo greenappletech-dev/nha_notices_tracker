@@ -1,4 +1,3 @@
-localstorage:
 <template>
     <div class="container mt-4">
         <div class="d-flex justify-content-center">
@@ -13,33 +12,45 @@ localstorage:
         <div class="card shadow-sm">
             <div class="card-body">
                 <div class="row">
-                    <!-- Left Side: Form Inputs -->
                     <div class="col-md-6">
+
                         <div class="form-group">
                             <label>Select Type of Notice</label>
-                            <select class="form-control" v-model="dataValues.notice_id" @change="saveToLocalStorage">
-                                <option value="1">Billing Notice</option>
-                                <option value="2">Demand Notice</option>
+                            <select class="form-control" v-model="dataValues.demand_id" @change="saveToLocalStorage">
+                                <option v-for="demand in demandNotices" :key="demand.id" :value="demand.id">
+                                    {{ demand.name }}
+                                </option>
                             </select>
+                            <small v-if="errors.demand_id" class="text-danger">{{ errors.demand_id }}</small>
                         </div>
+
                         <div class="form-group">
                             <label>Select District</label>
-                            <select class="form-control" @change="selectDistrict(dataValues.district_id)" v-model="dataValues.district_id">
+                            <select class="form-control" v-model="dataValues.district_id" @change="selectDistrict(dataValues.district_id)">
                                 <option v-for="district in districts" :value="district.id">{{ district.name }}</option>
                             </select>
+                            <small v-if="errors.district_id" class="text-danger">{{ errors.district_id }}</small>
                         </div>
+
                         <div class="form-group">
                             <label>Select Project</label>
-                            <Select2 class=" select2 custom-select-style" v-model="dataValues.project_id" :options="projectList" @change="myChangeProject(dataValues.project_id)" />
+                            <Select2 class=" select2 custom-select-style" v-model="dataValues.project_id" 
+                            :options="projectList" @change="myChangeProject(dataValues.project_id)" />
+                            <small v-if="errors.project_id" class="text-danger">{{ errors.project_id }}</small>
                         </div>
+
                         <div class="form-group">
                             <label>Search Beneficiary</label>
-                            <Select2 class="select2" v-model="dataValues.beneficiary_id" :options="beneficiaries" @change="updateAddress" />
+                            <Select2 class="select2" v-model="dataValues.beneficiary_id" 
+                            :options="beneficiaries" @change="updateAddress" />
+                            <small v-if="errors.beneficiary_id" class="text-danger">{{ errors.beneficiary_id }}</small>
                         </div>
+
                         <div class="form-group">
                             <label>Address</label>
                             <input type="text" class="form-control" v-model="dataValues.address" disabled />
                         </div>
+
                         <div class="form-group">
                             <label>ComCode</label>
                             <input type="text" class="form-control" v-model="dataValues.com_code" disabled />
@@ -56,10 +67,15 @@ localstorage:
                         <canvas ref="canvas" class="d-none"></canvas>
 
                         <div class="mt-3">
-                            <button v-if="!dataValues.capturedPhotoURL" class="btn btn-success btn-sm mx-1" @click="startCamera">Start Camera</button>
-                            <button v-if="!dataValues.capturedPhotoURL" class="btn btn-primary btn-sm mx-1" @click="capturePhoto">Capture Photo</button>
-
-                            <button v-if="dataValues.capturedPhotoURL" class="btn btn-warning btn-sm mx-1" @click="retakePhoto">Retake Photo</button>
+                            <button v-if="!cameraActive && !dataValues.capturedPhotoURL" class="btn btn-success btn-sm mx-1" @click="startCamera">
+                                Start Camera
+                            </button>
+                            <button v-if="cameraActive && !dataValues.capturedPhotoURL" class="btn btn-primary btn-sm mx-1" @click="capturePhoto">
+                                Capture Photo
+                            </button>
+                            <button v-if="dataValues.capturedPhotoURL" class="btn btn-warning btn-sm mx-1" @click="retakePhoto">
+                                Retake Photo
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -80,11 +96,13 @@ export default {
     props: ['districts'],
     data() {
         return {
+            cameraActive: false,
             showSuccessMessage: false,
             myValue: '',
+            errors:{},
             myOptions: ['op1', 'op2', 'op3'],
             dataValues: {
-                notice_id: '',
+                demand_id: '',
                 district_id: '',
                 project_id: '',
                 beneficiary_id: '',
@@ -95,18 +113,20 @@ export default {
             },
             projectList: [],
             beneficiaries: [],
-            cameraStream: null
+            cameraStream: null,
+            demandNotices: []
         };
     },
     components: { Select2 },
     created() {
         this.loadFromLocalStorage();
+        this.fetchDemandNotices();
     },
     methods: {
         saveToLocalStorage() {
             localStorage.setItem('dataValues', JSON.stringify({
-                notice_id: this.dataValues.notice_id,
-                district_id: this.dataValues.district_id,
+                district_id : this.dataValues.district_id,
+                demand_id: this.dataValues.demand_id,
                 project_id: this.dataValues.project_id,
                 beneficiary_id: this.dataValues.beneficiary_id,
                 address: this.dataValues.address
@@ -146,15 +166,17 @@ export default {
             this.saveToLocalStorage();
         },
         async startCamera() {
-            try {
-                const videoElement = this.$refs.camera;
-                this.cameraStream = await navigator.mediaDevices.getUserMedia({ video: true });
-                videoElement.srcObject = this.cameraStream;
-            } catch (error) {
-                console.error("Error accessing the camera:", error);
-                alert("Unable to access the camera. Please check your browser permissions.");
-            }
-        },
+    try {
+        const videoElement = this.$refs.camera;
+        this.cameraStream = await navigator.mediaDevices.getUserMedia({ constraints });
+        videoElement.srcObject = this.cameraStream;
+        this.cameraActive = true; // Show Capture Photo button
+    } catch (error) {
+        console.error("Error accessing the camera:", error);
+        alert("Unable to access the camera. Please check your browser permissions.");
+    }
+},
+
         async capturePhoto() {
             const canvas = this.$refs.canvas;
             const context = canvas.getContext('2d');
@@ -169,7 +191,9 @@ export default {
             this.dataValues.photo = new File([blob], "delivery_photo.png", { type: "image/png" });
 
             this.stopCamera();
+            this.cameraActive = false; 
         },
+
         retakePhoto() {
             this.dataValues.capturedPhotoURL = null;
             this.dataValues.photo = null;
@@ -182,8 +206,30 @@ export default {
             }
         },
         storeData() {
+            this.errors = {};
+
+                if (!this.dataValues.demand_id) {
+                    this.errors.demand_id = "Please select a type of notice.";
+                }
+                if (!this.dataValues.district_id) {
+                    this.errors.district_id = "Please select a district.";
+                }
+                if (!this.dataValues.project_id) {
+                    this.errors.project_id = "Please select a project.";
+                }
+                if (!this.dataValues.beneficiary_id) {
+                    this.errors.beneficiary_id = "Please select a beneficiary.";
+                }
+                if (!this.dataValues.photo) {
+                    this.errors.photo = "Please capture a delivery photo.";
+                }
+
+                if (Object.keys(this.errors).length > 0) {
+                    return;
+                }
+
             const formData = new FormData();
-            formData.append('notice_id', this.dataValues.notice_id);
+            formData.append('demand_id', this.dataValues.demand_id);
             formData.append('district_id', this.dataValues.district_id);
             formData.append('project_id', this.dataValues.project_id);
             formData.append('beneficiary_id', this.dataValues.beneficiary_id);
@@ -214,6 +260,15 @@ export default {
             this.dataValues.photo = null;
             this.dataValues.capturedPhotoURL = null;
             this.startCamera();
+        },
+        fetchDemandNotices() {
+            axios.get('/demandnotice/show')
+                .then(response => {
+                    this.demandNotices = response.data.data;
+                })
+                .catch(error => {
+                    console.error("Error fetching demand notices:", error);
+                });
         },
         mounted () {
             this.selectDistrict();

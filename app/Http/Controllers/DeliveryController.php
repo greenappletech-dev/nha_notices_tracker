@@ -9,6 +9,7 @@ use App\Models\District;
 use App\Models\Delivery;
 use App\Models\Province;
 use App\Models\Beneficiary;
+use App\Models\DemandNoticeTracker;
 use Illuminate\Http\Request;
 
 class DeliveryController extends Controller
@@ -22,8 +23,9 @@ class DeliveryController extends Controller
         return view('deliveries', compact('districts'));
     }
     public function store(Request $request){
+        // dd($request->all());
         $request->validate([
-            'notice_id' => 'required',
+            'demand_id' => 'required',
             'project_id' => 'required',
             'beneficiary_id' => 'required',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
@@ -48,7 +50,7 @@ class DeliveryController extends Controller
         }
 
         $delivery = Delivery::create([
-            'notice_type_id' => $request->notice_id,
+            'demand_id' => $request->demand_id,
             'project_id' => $request->project_id,
             'beneficiary_id' => $request->beneficiary_id,
             'photo' => $photoPath,
@@ -86,6 +88,12 @@ class DeliveryController extends Controller
         'beneficiaries.address',
         'beneficiaries.com_code',
         )->where('project_id',$id)->orderBy('com_code')->get()],200);
+    }
+
+    public function getNoticeTypes()
+    {
+        $demandNotice = DemandNoticeTracker::all();
+        return response()->json(['data' => $noticeTypes], 200);
     }
 
 }

@@ -38,9 +38,12 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/show', [DemandNoticeTrackerController::class, 'show']);
         Route::post('/store', [DemandNoticeTrackerController::class, 'store']);
         Route::put('/update/{id}', [DemandNoticeTrackerController::class, 'update']);
-        Route::delete('/destroy/{id}', [DemandNoticeTrackerController::class, 'destroy']);
+        Route::get('/destroy/{id}', [DemandNoticeTrackerController::class, 'destroy']);
+        Route::get('/show', [DemandNoticeTrackerController::class, 'show']);
+
     });
     Route::prefix('notice-viewer')->group(function () {
         Route::get('/', [DeliveryHistoryController::class, 'index']);
     });
-}); 
+});
+
