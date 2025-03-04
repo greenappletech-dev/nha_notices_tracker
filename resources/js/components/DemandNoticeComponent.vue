@@ -1,16 +1,14 @@
 <template>
-    <div class="p-2">
+    <div class="p-2"    >
         <div class="m-4 mt-4">
-            <div class="mb-1">
-                <div class="d-flex justify-content-end">
-                    <button class="btn btn-primary" v-on:click="create">
-                        <i class="fas fa-plus"></i> Create New
-                    </button>
-                </div>
+            <div class="d-flex justify-content-end ">
+                <button class="btn btn-primary" v-on:click="create">
+                    <i class="fas fa-plus"></i> Create New
+                </button>
             </div>
-
-            <div class="card mb-4">
-                <div class="card-header"><b>Demand Notices List</b></div>
+            <div class="card mb-4 ">
+              
+                <div class="card-header"><b>Type of Notices List</b></div>
                 <div class="card-body">
                     <v-client-table :data="data" :columns="columns" :options="options">
                         <template slot="actions" slot-scope="row">
@@ -25,8 +23,8 @@
                 </div>
             </div>
 
-            <div class="modal fade" id="create-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal" id="create-demand">
+                <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <h5 class="modal-title bg-primary text-center pt-2 pb-2" style="font-weight:bold;">
                             {{ isEdit ? 'Update Demand Notice' : 'Create Demand Notice'}}
@@ -86,12 +84,13 @@ export default {
             });
         },
         closeModal() {
-            $("#create-modal").modal("hide");
+            $('#create-demand').modal('hide');
         },
         create() {
-            this.isEdit = false;
-            this.init();
-            $("#create-modal").modal("show");
+            console.log('test');
+            // this.isEdit = false;
+            // this.init();
+            $('#create-demand').modal('show');
         },
         createRecord() {
             axios.post('/demandnotice/store', { name: this.name })
@@ -120,7 +119,7 @@ export default {
             this.isEdit = true;
             this.id = data.row.id;
             this.name = data.row.name;
-            $("#create-modal").modal("show");
+            $('#create-demand').modal('show'); // Fix modal ID
         },
         updateRecord() {
             axios.put('/demandnotice/update/' + this.id, { name: this.name })
@@ -133,7 +132,7 @@ export default {
                     });
                     this.show();
                     this.init();
-                    $('#create-modal').modal('hide');
+                    $('#create-demand').modal('hide'); // Fix modal ID
                 })
                 .catch(error => {
                     this.$fire({

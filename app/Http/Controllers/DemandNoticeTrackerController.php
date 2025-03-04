@@ -35,7 +35,7 @@ class DemandNoticeTrackerController extends Controller
         return response()->json([
             'message' => 'Demand Notice successfully created!',
             'data' => $demandNotice,
-        ], 200);
+        ], 201); // Changed status code to 201
     }
 
     // Update an existing record

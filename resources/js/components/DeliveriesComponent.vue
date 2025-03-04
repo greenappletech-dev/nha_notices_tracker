@@ -1,3 +1,4 @@
+localstorage:
 <template>
     <div class="container mt-4">
         <div class="d-flex justify-content-center">
@@ -16,20 +17,20 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Select Type of Notice</label>
-                            <select class="form-control" v-model="dataValues.notice_id">
+                            <select class="form-control" v-model="dataValues.notice_id" @change="saveToLocalStorage">
                                 <option value="1">Billing Notice</option>
                                 <option value="2">Demand Notice</option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label>Select District</label>
-                            <select class="form-control" @change="selectDistrict" v-model="dataValues.district_id">
+                            <select class="form-control" @change="selectDistrict(dataValues.district_id)" v-model="dataValues.district_id">
                                 <option v-for="district in districts" :value="district.id">{{ district.name }}</option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label>Select Project</label>
-                            <Select2 class=" select2 custom-select-style" v-model="dataValues.project_id" :options="projectList" @change="myChangeProject" />
+                            <Select2 class=" select2 custom-select-style" v-model="dataValues.project_id" :options="projectList" @change="myChangeProject(dataValues.project_id)" />
                         </div>
                         <div class="form-group">
                             <label>Search Beneficiary</label>
@@ -73,14 +74,15 @@
 
 <script>
 import Select2 from 'v-select2-component';
+import axios from 'axios';
 
 export default {
     props: ['districts'],
     data() {
         return {
             showSuccessMessage: false,
-            myValue:'',
-            myOptions: ['op1', 'op2', 'op3'], // or [{id: key, text: value}, {id: key, text: value}]
+            myValue: '',
+            myOptions: ['op1', 'op2', 'op3'],
             dataValues: {
                 notice_id: '',
                 district_id: '',
@@ -93,26 +95,46 @@ export default {
             },
             projectList: [],
             beneficiaries: [],
-            cameraStream: null // Track the camera stream
+            cameraStream: null
         };
     },
     components: { Select2 },
+    created() {
+        this.loadFromLocalStorage();
+    },
     methods: {
-        selectDistrict() {
-            axios.get(`deliveries/gather_project/${this.dataValues.district_id}`)
+        saveToLocalStorage() {
+            localStorage.setItem('dataValues', JSON.stringify({
+                notice_id: this.dataValues.notice_id,
+                district_id: this.dataValues.district_id,
+                project_id: this.dataValues.project_id,
+                beneficiary_id: this.dataValues.beneficiary_id,
+                address: this.dataValues.address
+            }));
+        },
+        loadFromLocalStorage() {
+            const savedData = JSON.parse(localStorage.getItem('dataValues'));
+            if (savedData) {
+                this.dataValues = { ...this.dataValues, ...savedData };
+                this.selectDistrict(this.dataValues.district_id);
+                this.myChangeProject(this.dataValues.project_id);
+            }
+        },
+        selectDistrict(district_id) {
+            axios.get(`deliveries/gather_project/${district_id}`)
                 .then(response => {
                     this.projectList = response.data.data;
+                    this.saveToLocalStorage();
                 });
         },
-        myChangeProject() {
-            axios.get(`deliveries/gather_beneficiaries/${this.dataValues.project_id}`)
+        myChangeProject(project_id) {
+            axios.get(`deliveries/gather_beneficiaries/${project_id}`)
                 .then(response => {
                     this.beneficiaries = response.data.data;
+                    this.saveToLocalStorage();
                 });
         },
         updateAddress() { 
-            // console.log(this.dataValues.beneficiary_id);
-
             const selectedBeneficiary = this.beneficiaries.find(b => b.id == this.dataValues.beneficiary_id);
             if (selectedBeneficiary) {
                 this.dataValues.address = selectedBeneficiary.address;
@@ -121,14 +143,10 @@ export default {
                 console.warn("Selected beneficiary not found!");
                 this.dataValues.address = '';
             }
+            this.saveToLocalStorage();
         },
         async startCamera() {
             try {
-                const constraints = {
-                    video: {
-                        facingMode: { exact: "environment" }, // Use back camera
-                    },
-                };
                 const videoElement = this.$refs.camera;
                 this.cameraStream = await navigator.mediaDevices.getUserMedia({ video: true });
                 videoElement.srcObject = this.cameraStream;
@@ -155,7 +173,6 @@ export default {
         retakePhoto() {
             this.dataValues.capturedPhotoURL = null;
             this.dataValues.photo = null;
-
             this.startCamera();
         },
         stopCamera() {
@@ -194,18 +211,14 @@ export default {
             });
         },
         resetForm() {
-            this.dataValues = {
-                notice_id: '',
-                district_id: '',
-                project_id: '',
-                beneficiary_id: '',
-                address: '',
-                photo: null,
-                capturedPhotoURL: null,
-            };
-
+            this.dataValues.photo = null;
+            this.dataValues.capturedPhotoURL = null;
             this.startCamera();
-        }
+        },
+        mounted () {
+            this.selectDistrict();
+            this.myChangeProject();
+        },
     },
 };
 </script>
