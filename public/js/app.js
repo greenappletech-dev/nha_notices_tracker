@@ -5099,7 +5099,7 @@ module.exports = {
 /***/ ((module) => {
 
 "use strict";
-module.exports = /*#__PURE__*/JSON.parse('{"name":"axios","version":"0.21.4","description":"Promise based HTTP client for the browser and node.js","main":"index.js","scripts":{"test":"grunt test","start":"node ./sandbox/server.js","build":"NODE_ENV=production grunt build","preversion":"npm test","version":"npm run build && grunt version && git add -A dist && git add CHANGELOG.md bower.json package.json","postversion":"git push && git push --tags","examples":"node ./examples/server.js","coveralls":"cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js","fix":"eslint --fix lib/**/*.js"},"repository":{"type":"git","url":"https://github.com/axios/axios.git"},"keywords":["xhr","http","ajax","promise","node"],"author":"Matt Zabriskie","license":"MIT","bugs":{"url":"https://github.com/axios/axios/issues"},"homepage":"https://axios-http.com","devDependencies":{"coveralls":"^3.0.0","es6-promise":"^4.2.4","grunt":"^1.3.0","grunt-banner":"^0.6.0","grunt-cli":"^1.2.0","grunt-contrib-clean":"^1.1.0","grunt-contrib-watch":"^1.0.0","grunt-eslint":"^23.0.0","grunt-karma":"^4.0.0","grunt-mocha-test":"^0.13.3","grunt-ts":"^6.0.0-beta.19","grunt-webpack":"^4.0.2","istanbul-instrumenter-loader":"^1.0.0","jasmine-core":"^2.4.1","karma":"^6.3.2","karma-chrome-launcher":"^3.1.0","karma-firefox-launcher":"^2.1.0","karma-jasmine":"^1.1.1","karma-jasmine-ajax":"^0.1.13","karma-safari-launcher":"^1.0.0","karma-sauce-launcher":"^4.3.6","karma-sinon":"^1.0.5","karma-sourcemap-loader":"^0.3.8","karma-webpack":"^4.0.2","load-grunt-tasks":"^3.5.2","minimist":"^1.2.0","mocha":"^8.2.1","sinon":"^4.5.0","terser-webpack-plugin":"^4.2.3","typescript":"^4.0.5","url-search-params":"^0.10.0","webpack":"^4.44.2","webpack-dev-server":"^3.11.0"},"browser":{"./lib/adapters/http.js":"./lib/adapters/xhr.js"},"jsdelivr":"dist/axios.min.js","unpkg":"dist/axios.min.js","typings":"./index.d.ts","dependencies":{"follow-redirects":"^1.14.0"},"bundlesize":[{"path":"./dist/axios.min.js","threshold":"5kB"}]}');
+module.exports = /*#__PURE__*/JSON.parse('{"_args":[["axios@0.21.4","C:\\\\xampp\\\\htdocs\\\\nha_notices_tracker"]],"_development":true,"_from":"axios@0.21.4","_id":"axios@0.21.4","_inBundle":false,"_integrity":"sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==","_location":"/axios","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"axios@0.21.4","name":"axios","escapedName":"axios","rawSpec":"0.21.4","saveSpec":null,"fetchSpec":"0.21.4"},"_requiredBy":["#DEV:/"],"_resolved":"https://registry.npmjs.org/axios/-/axios-0.21.4.tgz","_spec":"0.21.4","_where":"C:\\\\xampp\\\\htdocs\\\\nha_notices_tracker","author":{"name":"Matt Zabriskie"},"browser":{"./lib/adapters/http.js":"./lib/adapters/xhr.js"},"bugs":{"url":"https://github.com/axios/axios/issues"},"bundlesize":[{"path":"./dist/axios.min.js","threshold":"5kB"}],"dependencies":{"follow-redirects":"^1.14.0"},"description":"Promise based HTTP client for the browser and node.js","devDependencies":{"coveralls":"^3.0.0","es6-promise":"^4.2.4","grunt":"^1.3.0","grunt-banner":"^0.6.0","grunt-cli":"^1.2.0","grunt-contrib-clean":"^1.1.0","grunt-contrib-watch":"^1.0.0","grunt-eslint":"^23.0.0","grunt-karma":"^4.0.0","grunt-mocha-test":"^0.13.3","grunt-ts":"^6.0.0-beta.19","grunt-webpack":"^4.0.2","istanbul-instrumenter-loader":"^1.0.0","jasmine-core":"^2.4.1","karma":"^6.3.2","karma-chrome-launcher":"^3.1.0","karma-firefox-launcher":"^2.1.0","karma-jasmine":"^1.1.1","karma-jasmine-ajax":"^0.1.13","karma-safari-launcher":"^1.0.0","karma-sauce-launcher":"^4.3.6","karma-sinon":"^1.0.5","karma-sourcemap-loader":"^0.3.8","karma-webpack":"^4.0.2","load-grunt-tasks":"^3.5.2","minimist":"^1.2.0","mocha":"^8.2.1","sinon":"^4.5.0","terser-webpack-plugin":"^4.2.3","typescript":"^4.0.5","url-search-params":"^0.10.0","webpack":"^4.44.2","webpack-dev-server":"^3.11.0"},"homepage":"https://axios-http.com","jsdelivr":"dist/axios.min.js","keywords":["xhr","http","ajax","promise","node"],"license":"MIT","main":"index.js","name":"axios","repository":{"type":"git","url":"git+https://github.com/axios/axios.git"},"scripts":{"build":"NODE_ENV=production grunt build","coveralls":"cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js","examples":"node ./examples/server.js","fix":"eslint --fix lib/**/*.js","postversion":"git push && git push --tags","preversion":"npm test","start":"node ./sandbox/server.js","test":"grunt test","version":"npm run build && grunt version && git add -A dist && git add CHANGELOG.md bower.json package.json"},"typings":"./index.d.ts","unpkg":"dist/axios.min.js","version":"0.21.4"}');
 
 /***/ }),
 
@@ -5311,9 +5311,9 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
       localStorage.setItem('dataValues', JSON.stringify({
         district_id: this.dataValues.district_id,
         demand_id: this.dataValues.demand_id,
-        project_id: this.dataValues.project_id
-        // beneficiary_id: this.dataValues.beneficiary_id,
-        // address: this.dataValues.address
+        project_id: this.dataValues.project_id,
+        beneficiary_id: this.dataValues.beneficiary_id,
+        address: this.dataValues.address
       }));
     },
     loadFromLocalStorage: function loadFromLocalStorage() {
@@ -10307,7 +10307,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.custom-select[data-v-008b81f0] {\n    width: 100% !important; /* Custom width */\n    height: 45px !important; /* Custom height */\n    border: 2px solid #4CAF50 !important; /* Green border */\n    border-radius: 8px !important; /* Rounded corners */\n    font-size: 16px;\n}\n/* Style dropdown */\n.select2-container--default .select2-dropdown[data-v-008b81f0] {\n    background-color: #f9f9f9;\n    border: 1px solid #4CAF50;\n}\n\n    /* Style dropdown items */\n.select2-container--default .select2-results__option[data-v-008b81f0] {\n    padding: 10px;\n    font-size: 16px;\n}\n\n    /* Highlight hover effect */\n.select2-container--default .select2-results__option--highlighted[data-v-008b81f0] {\n    background-color: #4CAF50 !important;\n    color: white !important;\n}\n/* .select2{\n    width: 100%;\n    margin-bottom: 10px;\n    align-items: center;\n    display: block;\n    width: 100%;\n    height: calc(2.25rem + 2px);\n    font-size: 1rem;\n    font-weight: 400;\n    line-height: 1.5;\n    color: #495057;\n    background-color: #fff;\n    background-clip: padding-box;\n    border: 1px solid #ced4da;\n    border-radius: .25rem;\n    box-shadow: inset 0 0 0 transparent;\n    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;\n} */\n.camera-preview[data-v-008b81f0], .captured-photo[data-v-008b81f0] {\n    width: 100%;\n    height: 340px;\n    border: 2px solid #ddd;\n    border-radius: 8px;\n    -o-object-fit: cover;\n       object-fit: cover;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.custom-select[data-v-008b81f0] {\n    width: 100% !important; /* Custom width */\n    height: 45px !important; /* Custom height */\n    border: 2px solid #4CAF50 !important; /* Green border */\n    border-radius: 8px !important; /* Rounded corners */\n    font-size: 16px;\n}\n/* Style dropdown */\n.select2-container--default .select2-dropdown[data-v-008b81f0] {\n    background-color: #f9f9f9;\n    border: 1px solid #4CAF50;\n}\n\n    /* Style dropdown items */\n.select2-container--default .select2-results__option[data-v-008b81f0] {\n    padding: 10px;\n    font-size: 16px;\n}\n\n    /* Highlight hover effect */\n.select2-container--default .select2-results__option--highlighted[data-v-008b81f0] {\n    background-color: #4CAF50 !important;\n    color: white !important;\n}\n.select2[data-v-008b81f0]{\n    width: 100%;\n    margin-bottom: 10px;\n    align-items: center;\n    display: block;\n    width: 100%;\n    height: calc(2.25rem + 2px);\n    font-size: 1rem;\n    font-weight: 400;\n    line-height: 1.5;\n    color: #495057;\n    background-color: #fff;\n    background-clip: padding-box;\n    border: 1px solid #ced4da;\n    border-radius: .25rem;\n    box-shadow: inset 0 0 0 transparent;\n    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;\n}\n.camera-preview[data-v-008b81f0], .captured-photo[data-v-008b81f0] {\n    width: 100%;\n    height: 340px;\n    border: 2px solid #ddd;\n    border-radius: 8px;\n    -o-object-fit: cover;\n       object-fit: cover;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -50719,8 +50719,8 @@ var render = function () {
                     {
                       name: "model",
                       rawName: "v-model",
-                      value: _vm.dataValues.notice_id,
-                      expression: "dataValues.notice_id",
+                      value: _vm.dataValues.demand_id,
+                      expression: "dataValues.demand_id",
                     },
                   ],
                   staticClass: "form-control",
@@ -50737,7 +50737,7 @@ var render = function () {
                           })
                         _vm.$set(
                           _vm.dataValues,
-                          "notice_id",
+                          "demand_id",
                           $event.target.multiple
                             ? $$selectedVal
                             : $$selectedVal[0]
@@ -50856,7 +50856,7 @@ var render = function () {
                 _c("label", [_vm._v("Search Beneficiary")]),
                 _vm._v(" "),
                 _c("Select2", {
-                  staticClass: "select2",
+                  staticClass: "select2 custom-select-style",
                   attrs: { options: _vm.beneficiaries },
                   on: { change: _vm.updateAddress },
                   model: {
