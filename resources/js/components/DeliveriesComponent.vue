@@ -16,7 +16,7 @@
 
                         <div class="form-group">
                             <label>Select Documentation Type</label>
-                            <select class="form-control" v-model="dataValues.notice_id" @change="saveToLocalStorage">
+                            <select class="form-control" v-model="dataValues.demand_id" @change="saveToLocalStorage">
                                 <option v-for=" docs in documenttion_types"  :value="docs.id">{{ docs.name }}</option>
                             </select>
                             <small v-if="errors.demand_id" class="text-danger">{{ errors.demand_id }}</small>
@@ -39,7 +39,7 @@
 
                         <div class="form-group">
                             <label>Search Beneficiary</label>
-                            <Select2 class="select2" v-model="dataValues.beneficiary_id" 
+                            <Select2 class="select2 custom-select-style" v-model="dataValues.beneficiary_id" 
                             :options="beneficiaries" @change="updateAddress" />
                             <small v-if="errors.beneficiary_id" class="text-danger">{{ errors.beneficiary_id }}</small>
                         </div>
@@ -124,8 +124,8 @@ export default {
                 district_id : this.dataValues.district_id,
                 demand_id: this.dataValues.demand_id,
                 project_id: this.dataValues.project_id,
-                // beneficiary_id: this.dataValues.beneficiary_id,
-                // address: this.dataValues.address
+                beneficiary_id: this.dataValues.beneficiary_id,
+                address: this.dataValues.address,
             }));
         },
         loadFromLocalStorage() {
@@ -310,7 +310,7 @@ export default {
     background-color: #4CAF50 !important;
     color: white !important;
     }
-/* .select2{
+.select2{
     width: 100%;
     margin-bottom: 10px;
     align-items: center;
@@ -327,7 +327,7 @@ export default {
     border-radius: .25rem;
     box-shadow: inset 0 0 0 transparent;
     transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
-} */
+}
 .camera-preview, .captured-photo {
     width: 100%;
     height: 340px;

@@ -131,7 +131,7 @@
     {{-- Custom Scripts --}}
     @yield('adminlte_js')
 
-    <!-- <style>
+      <style>
     .select2-container--default .select2-selection--single{
         border: none!important;
         width: 100%;
@@ -139,28 +139,20 @@
     .select2-container--default{
         width: 100%!important;
     }
-    .content-wrapper {
-        background-color: #F8F8F8 !important;
-        position: relative;
-        min-height: 100vh;
-        z-index: -2;
-    }
+    
 
-    /* .content-wrapper::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: url("{{ asset('/images/nha.png') }}") center center no-repeat;
-        background-size: 600px 80vh;
-        opacity: 0.1;
-        z-index: -1;
-    } */
+    .content-wrapper {
+    /* background-color: #F8F8F8 !important; */
+    background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), 
+    url({{ asset('images/nha.png') }});
+    background-position: center;
+    background-size: 900px;
+    background-repeat: no-repeat;
+}
+
 
    
-</style> -->
+</style>
 
 
 </body>

@@ -33,78 +33,107 @@
 </aside>
 
 <style>
+/* Enhanced Sidebar Base Design */
 .main-sidebar {
-    background: linear-gradient(180deg, #295F98 0%, #1E3A5F 100%);
+    background: linear-gradient(135deg, #295F98 0%, #1E3A5F 100%);
     color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: width 0.3s ease-in-out;
 }
 
+/* Navigation Item Styling */
 .nav-sidebar .nav-item {
     position: relative;
+    margin: 8px 0;
+    perspective: 1000px;
 }
 
 .nav-sidebar .nav-link {
     color: #ffffff !important;
     font-size: 15px;
-    padding: 10px 15px;
-    border-radius: 6px;
-    transition: background 0.3s, transform 0.2s ease-in-out;
+    padding: 12px 15px;
+    border-radius: 8px;
+    transition: all 0.3s ease-in-out;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    overflow: hidden;
 }
 
+/* Hover Effect with Subtle Depth */
 .nav-sidebar .nav-link:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: translateX(5px);
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateX(5px) rotateX(5deg);
+    box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.1);
 }
 
+/* Active Link Enhanced Design */
 .nav-sidebar .nav-item > .nav-link.active {
     background: #4A8FD4 !important;
     color: #ffffff !important;
     font-weight: bold;
-    border-radius: 8px;
-    box-shadow: 0px 4px 8px rgba(74, 143, 212, 0.5);
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(74, 143, 212, 0.6);
     position: relative;
+    overflow: visible;
 }
 
+/* Animated Active State Indicator */
 .nav-sidebar .nav-item > .nav-link.active::before {
     content: "";
     position: absolute;
     left: 0;
     top: 10%;
-    width: 5px;
+    width: 6px;
     height: 80%;
-    background-color: white;
+    background: linear-gradient(to bottom, #ffffff, #e0e0e0);
     border-radius: 5px;
+    animation: pulse 1.5s infinite alternate;
 }
 
-.nav-sidebar .nav-item > .nav-link.active i {
-    color: white !important;
+/* Pulse Animation for Active Indicator */
+@keyframes pulse {
+    0% { opacity: 0.7; transform: scaleY(1); }
+    100% { opacity: 1; transform: scaleY(1.05); }
 }
 
+/* Nested Treeview Styling */
 .nav-treeview .nav-item .nav-link {
-    padding-left: 30px;
+    padding-left: 40px;
     font-size: 14px;
+    opacity: 0.9;
+    transition: all 0.3s ease;
 }
 
 .nav-treeview .nav-item .nav-link:hover {
     background: rgba(255, 255, 255, 0.1);
+    opacity: 1;
 }
 
 .nav-treeview .nav-item .nav-link.active {
     background: #5BA5E0 !important;
-    border-radius: 5px;
+    border-radius: 6px;
+    opacity: 1;
 }
-/* Centering logo */
+
+/* Logo and Branding Section */
 .brand-logo-container {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 15px 0;
+    padding: 20px 0;
     transition: all 0.3s ease-in-out;
+    position: relative;
+    overflow: hidden;
 }
 
 .brand-image {
     max-height: 100px;
     width: auto;
     transition: all 0.3s ease-in-out;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
 }
 
 .brand-text {
@@ -113,20 +142,45 @@
     text-align: center;
     font-weight: bold;
     transition: all 0.3s ease-in-out;
+    margin-top: 10px;
+    letter-spacing: 1px;
 }
 
+/* Sidebar Collapse Animations */
 .sidebar-collapse .brand-image {
-    max-height: 50px !important;
+    max-height: 50px;
+    transform: scale(0.8);
 }
 
 .sidebar-collapse .brand-text {
-    display: none !important;
+    font-size: 0;
+    opacity: 0;
 }
 
+/* Responsive Adjustments */
 @media (max-width: 768px) {
     .brand-image {
         max-height: 80px;
     }
+    
+    .nav-sidebar .nav-link {
+        justify-content: center;
+    }
 }
 
+/* Optional: Subtle Background Pattern */
+.main-sidebar::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        linear-gradient(45deg, rgba(255,255,255,0.05) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(255,255,255,0.05) 25%, transparent 25%);
+    background-size: 30px 30px;
+    opacity: 0.3;
+    pointer-events: none;
+}
 </style>
